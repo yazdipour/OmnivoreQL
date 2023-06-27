@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='omnivore_api',
+    name='omnivoreql',
     version='0.1',
     description='A library to interact with the Omnivore API',
     author='Shahriar Yazdipour',
