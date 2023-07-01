@@ -19,7 +19,7 @@ setup(
     license="MIT",
     keywords="omnivore api readlater graphql gql client",
     platforms="any",
-    url="https: // github.com/yazdipour/OmnivoreQL",
+    url="https://github.com/yazdipour/OmnivoreQL",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
