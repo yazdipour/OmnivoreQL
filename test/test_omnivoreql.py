@@ -17,7 +17,6 @@ class TestOmnivoreQL(unittest.TestCase):
             print("OMNIVORE_API_TOKEN: " + self.api_token)
             self.omnivoreql = omnivoreql.OmnivoreQL(
                 "https://api-prod.omnivore.app/api/graphql", self.api_token)
-        return self.omnivoreql
 
     def getEnvVariable(self, variable_name):
         for arg in sys.argv[1:]:
@@ -42,8 +41,10 @@ class TestOmnivoreQL(unittest.TestCase):
         self.assertFalse('errorCodes' in articles['search'])
 
     def test_get_article(self):
+        username = self.omnivoreql.get_profile()['me']['profile']['username']
+        slug = self.omnivoreql.get_articles()['search']['edges'][0]['node']['slug']
         articles = self.omnivoreql.get_article(
-            "yazdipour", "how-to-pick-a-random-element-from-an-infinite-stream-188ac853c09"
+            username, slug
         )
         self.assertIsNotNone(articles)
         self.assertFalse('errorCodes' in articles['article'])
