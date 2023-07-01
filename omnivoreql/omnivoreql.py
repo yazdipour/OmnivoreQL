@@ -201,6 +201,9 @@ class OmnivoreQL:
             q, variable_values={"first": first, "after": after, "query": query}
         )
 
+    def get_articles(self, first=None, after=None):
+        return self.search_articles(first, after)
+
     def get_article(self, username, slug, include_friends_highlights=False):
         query = gql(
             """
