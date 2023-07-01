@@ -72,7 +72,7 @@ class OmnivoreQL:
         )
         return self.client.execute(query)
 
-    def get_subscription(self):
+    def get_subscriptions(self):
         query = gql(
             """
                 query GetSubscriptions {

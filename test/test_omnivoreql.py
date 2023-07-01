@@ -54,6 +54,11 @@ class TestOmnivoreQL(unittest.TestCase):
         self.assertIsNotNone(labels)
         self.assertFalse('errorCodes' in labels['labels'])
 
+    def test_get_subscriptions(self):
+        subscriptions = self.omnivoreql.get_subscriptions()
+        self.assertIsNotNone(subscriptions)
+        self.assertFalse('errorCodes' in subscriptions['subscriptions'])
+
 
 if __name__ == '__main__':
     unittest.main()
