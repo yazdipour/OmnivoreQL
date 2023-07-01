@@ -5,6 +5,7 @@ This is a Python client for the [Omnivore API](https://omnivore.app).
 [![GitHub stars](https://img.shields.io/github/stars/yazdipour/omnivoreql.svg?style=social&label=Star)](https://github.com/yazdipour/omnivoreql/stargazers)
 [![PyPI version](https://badge.fury.io/py/omnivoreql.svg)](https://pypi.org/project/omnivoreql/)
 <!-- [![Tests](https://github.com/yazdipour/omnivoreql/workflows/Tests/badge.svg)](https://github.com/yazdipour/OmnivoreQL/actions/) -->
+[![Github Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/yazdipour)
 
 ## How to use
 
