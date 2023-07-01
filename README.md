@@ -1,28 +1,48 @@
-# Omnivore API client for Python
+# OmnivoreQL: Omnivore API client for Python
 
-## To install
+This is a Python client for the [Omnivore API](https://omnivore.app).
 
-```
-pip install omnivore_api
-```
+[![GitHub stars](https://img.shields.io/github/stars/yazdipour/omnivoreql.svg?style=social&label=Star)](https://github.com/yazdipour/omnivoreql/stargazers)
+[![PyPI version](https://badge.fury.io/py/omnivoreql.svg)](https://pypi.org/project/omnivoreql/)
+<!-- [![Tests](https://github.com/yazdipour/omnivoreql/workflows/Tests/badge.svg)](https://github.com/yazdipour/OmnivoreQL/actions/) -->
 
-## Package Your Library
+## How to use
 
-These files are used to package your library.
+To use omnivoreql in your Python project, you can follow these steps:
 
-- `setup.py` is the build script for setuptools. It tells setuptools about your package (such as the name and version) as well as files to include.
-- `setup.cfg` is a configuration file that can be used to set package metadata and options for various command line commands.
-- `MANIFEST.in` is used to include other files in your package like the README, the tests, etc.
+Install the omnivoreql package using pip:
 
-To create a source distribution, you run:
-
-```
-python setup.py sdist
+```bash
+pip install omnivoreql
 ```
 
-The Python Package Index (PyPI) is a repository of software for Python. You can use the twine tool to upload your package to PyPI:
+Import the package into your project:
 
+```python
+import omnivoreql
 ```
-pip install twine
-twine upload dist/*
+
+Create a new instance of the client:
+
+```python
+api_url = "https://api-prod.omnivore.app/api/graphql"
+api_token = "your_api_token_here"
+omnivoreql_client = omnivoreql.OmnivoreQL(api_url, api_token)
+```
+
+Use the methods of the OmnivoreQL class to interact with the Omnivore API. 
+
+```python
+profile = omnivoreql_client.get_profile()
+
+result = omnivoreql_client.save_url("https://www.google.com")
+
+articles = omnivoreql_client.get_articles()
+
+username = profile['me']['profile']['username']
+slug = articles['search']['edges'][0]['node']['slug']
+articles = omnivoreql_client.get_article(username, slug)
+
+labels = omnivoreql_client.get_labels()
+subscriptions = omnivoreql_client.get_subscriptions()
 ```
