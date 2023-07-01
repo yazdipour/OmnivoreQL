@@ -1,3 +1,2 @@
-gql
-aiohttp 
-requests_toolbelt
+gql==3.4.1 
+requests-toolbelt==1.0.0

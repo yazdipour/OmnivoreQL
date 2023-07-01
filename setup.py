@@ -8,6 +8,7 @@ setup(
     author_email='git@yazdipour.com',
     packages=find_packages(),
     install_requires=[
-        # list of libraries your library depends on
+        'gql==3.4.1',
+        'requests-toolbelt==1.0.0'
     ],
 )
