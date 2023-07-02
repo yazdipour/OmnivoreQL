@@ -1,0 +1,25 @@
+name: Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run unit tests
+      run: python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN=$OMNIVORE_API_TOKEN
+      env:
+        OMNIVORE_API_TOKEN: ${{ secrets.OMNIVORE_API_TOKEN }}
