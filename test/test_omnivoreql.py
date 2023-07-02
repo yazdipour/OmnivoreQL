@@ -14,7 +14,7 @@ class TestOmnivoreQL(unittest.TestCase):
         if self.omnivoreql is None:
             # Put in .env file or use 'python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
             self.api_token = self.getEnvVariable('OMNIVORE_API_TOKEN')
-            print("OMNIVORE_API_TOKEN: " + self.api_token)
+            print("OMNIVORE_API_TOKEN: " + self.api_token[:4])
             self.omnivoreql = omnivoreql.OmnivoreQL(
                 "https://api-prod.omnivore.app/api/graphql", self.api_token)
 

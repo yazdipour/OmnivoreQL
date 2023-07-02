@@ -20,6 +20,8 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run unit tests
-      run: python -m unittest test/test_omnivoreql.py
+      run: |
+        cd test
+        python -m unittest test_omnivoreql.py
       env:
         OMNIVORE_API_TOKEN: ${{ secrets.OMNIVORE_API_TOKEN }}
