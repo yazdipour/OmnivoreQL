@@ -9,7 +9,8 @@ These files are used to package your library.
 To create a source distribution, you run:
 
 ```bash
-python setup.py sdist
+pip install setuptools wheel
+python setup.py sdist bdist_wheel
 ```
 
 The Python Package Index (PyPI) is a repository of software for Python. You can use the twine tool to upload your package to PyPI:

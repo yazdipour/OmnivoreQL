@@ -1,10 +1,8 @@
 include MANIFEST.in
-include omnivoreql/__version__.py
-
 include LICENSE
 include README.md
-include CONTRIBUTING.md
-
 include requirements.txt
+recursive-include omnivoreql *
 
-recursive-include docs *
+# exclude from sdist
+exclude CONTRIBUTING.md

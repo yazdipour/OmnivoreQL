@@ -1,15 +1,14 @@
 from setuptools import setup, find_packages
-import os
 
-# Get version from __version__.py file
-current_folder = os.path.abspath(os.path.dirname(__file__))
-about = {}
-with open(os.path.join(current_folder, "omnivoreql", "__version__.py")) as f:
-    exec(f.read(), about)
+VERSION = "0.2.3"
+PROJECT_URLS = {
+    "Bug Tracker": "https://github.com/yazdipour/OmnivoreQL/issues",
+    "Source Code": "https://github.com/yazdipour/OmnivoreQL",
+}
 
 setup(
     name='omnivoreql',
-    version=about["__version__"],
+    version=VERSION,
     description='Omnivore API Client for Python',
     author='Shahriar Yazdipour',
     author_email='git@yazdipour.com',
@@ -20,8 +19,8 @@ setup(
     keywords="omnivore api readlater graphql gql client",
     platforms="any",
     url="https://github.com/yazdipour/OmnivoreQL",
+    project_urls=PROJECT_URLS,
     classifiers=[
-        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries",
         "Programming Language :: Python :: 3",
