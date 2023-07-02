@@ -21,7 +21,7 @@ jobs:
 
     - name: Run unit tests
       run: |
-        cd test
+        cd tests
         python -m unittest test_omnivoreql.py
       env:
         OMNIVORE_API_TOKEN: ${{ secrets.OMNIVORE_API_TOKEN }}
