@@ -2,12 +2,25 @@ from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 import uuid
 
-class OmnivoreQL:
-    def __init__(self, url, api_token):
-        transport = RequestsHTTPTransport(url=url, headers= {"content-type": "application/json", "authorization": api_token}, use_json=True)
-        self.client = Client(transport=transport, fetch_schema_from_transport=False)
 
-    def save_url(self, url):
+class OmnivoreQL:
+    def __init__(self, api_token: str, graphqlEndpointUrl: str = "https://api-prod.omnivore.app/api/graphql") -> None:
+        """
+        Initialize a new instance of the GraphQL client.
+
+        :param url: The URL of the Omnivore GraphQL endpoint.
+        :param api_token: The API token to use for authentication.
+        """
+        transport = RequestsHTTPTransport(url=graphqlEndpointUrl,
+                                          headers={
+                                              "content-type": "application/json",
+                                              "authorization": api_token
+                                          },
+                                          use_json=True)
+        self.client = Client(transport=transport,
+                             fetch_schema_from_transport=False)
+
+    def save_url(self, url: str):
         mutation = gql(
             """
             mutation {
@@ -100,7 +113,7 @@ class OmnivoreQL:
         )
         return self.client.execute(query)
 
-    def search_articles(self, first=None, after=None, query=None):
+    def search_articles(self, first: int = None, after: int = None, query: str = None):
         q = gql(
             """
             query Search($after: String, $first: Int, $query: String) {
@@ -201,10 +214,10 @@ class OmnivoreQL:
             q, variable_values={"first": first, "after": after, "query": query}
         )
 
-    def get_articles(self, first=None, after=None):
+    def get_articles(self, first: int = None, after: int = None):
         return self.search_articles(first, after)
 
-    def get_article(self, username, slug, include_friends_highlights=False):
+    def get_article(self, username: str, slug: str, include_friends_highlights: bool = False):
         query = gql(
             """
             query GetArticle($username: String!, $slug: String!, $includeFriendsHighlights: Boolean) {

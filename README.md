@@ -26,9 +26,8 @@ import omnivoreql
 Create a new instance of the client:
 
 ```python
-api_url = "https://api-prod.omnivore.app/api/graphql"
 api_token = "your_api_token_here"
-omnivoreql_client = omnivoreql.OmnivoreQL(api_url, api_token)
+omnivoreql_client = omnivoreql.OmnivoreQL(api_token)
 ```
 
 Use the methods of the OmnivoreQL class to interact with the Omnivore API. 
