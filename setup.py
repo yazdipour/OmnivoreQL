@@ -12,7 +12,7 @@ setup(
     description='Omnivore API Client for Python',
     author='Shahriar Yazdipour',
     author_email='git@yazdipour.com',
-    packages=find_packages(),
+    packages=find_packages("omnivoreql"),
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",
