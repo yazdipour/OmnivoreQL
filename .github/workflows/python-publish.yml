@@ -9,16 +9,17 @@
 name: 🚀 Deploy to PyPI
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_run:
+    workflows: ["Unit Tests"]
+    types:
+      - completed
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-
+    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
 
     steps:
