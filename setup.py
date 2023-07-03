@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "0.2.3.1"
+VERSION = "0.2.3.2"
 PROJECT_URLS = {
     "Bug Tracker": "https://github.com/yazdipour/OmnivoreQL/issues",
     "Source Code": "https://github.com/yazdipour/OmnivoreQL",
