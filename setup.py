@@ -28,7 +28,7 @@ setup(
     description='Omnivore API Client for Python',
     author='Shahriar Yazdipour',
     author_email='git@yazdipour.com',
-    packages=find_packages("omnivoreql"),
+    packages=find_packages('.'),
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",
@@ -36,6 +36,8 @@ setup(
     platforms="any",
     url="https://github.com/yazdipour/OmnivoreQL",
     project_urls=PROJECT_URLS,
+    include_package_data=True,
+    python_requires=">=3",
     classifiers=[
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries",
@@ -45,5 +47,5 @@ setup(
     install_requires=[
         'gql==3.4.1',
         'requests-toolbelt==1.0.0'
-    ],
+    ]
 )
