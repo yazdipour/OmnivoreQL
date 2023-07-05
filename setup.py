@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import subprocess
 
 def get_latest_git_tag():
@@ -28,7 +28,7 @@ setup(
     description='Omnivore API Client for Python',
     author='Shahriar Yazdipour',
     author_email='git@yazdipour.com',
-    packages=find_packages('.'),
+    packages=['omnivoreql'],
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",

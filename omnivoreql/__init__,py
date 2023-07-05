@@ -1,1 +1,1 @@
-from .omnivoreql import OmnivoreQL
+from . import omnivoreql
