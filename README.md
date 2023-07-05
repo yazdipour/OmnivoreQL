@@ -18,17 +18,12 @@ Install the omnivoreql package using pip:
 pip install omnivoreql
 ```
 
-Import the package into your project:
+Import the package into your project and Create a new instance of the client:
 
 ```python
-import omnivoreql
-```
+from omnivoreql import OmnivoreQL
 
-Create a new instance of the client:
-
-```python
-api_token = "your_api_token_here"
-omnivoreql_client = omnivoreql.OmnivoreQL(api_token)
+omnivoreql_client = OmnivoreQL("your_api_token_here")
 ```
 
 Use the methods of the OmnivoreQL class to interact with the Omnivore API. 
