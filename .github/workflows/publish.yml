@@ -1,28 +1,36 @@
-# This workflow will upload a Python Package using Twine when a release is created
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: 🚀 Deploy to PyPI
 
 on:
-  workflow_run:
-    workflows: ["Unit Tests"]
-    types:
-      - completed
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-
     steps:
+    - name: Check Unit Tests workflow success
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const runId = await github.actions.listWorkflowRuns({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'test',
+            branch: context.sha,
+            event: 'push',
+            status: 'success'
+          }).then(res => {
+            if (res.data.workflow_runs.length > 0) {
+              return res.data.workflow_runs[0].id
+            } else {
+              throw 'No successful run was found'
+            }
+          })
+
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v3
