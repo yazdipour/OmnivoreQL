@@ -21,7 +21,7 @@ and you can help out.
 After cloning this repo, create a virtualenv:
 
 ```console
-virtualenv dev
+python -m venv .venv
 ```
 
 Activate the virtualenv and install dependencies by running:
