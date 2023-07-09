@@ -1,10 +1,10 @@
-from omnivoreql import OmnivoreQL
 import os
 import unittest
 import sys
 from dotenv import load_dotenv
 # Add the path to the folder containing the omnivoreql module to the Python path
 sys.path.append(os.path.abspath('../omnivoreql'))
+from omnivoreql import OmnivoreQL
 
 
 class TestOmnivoreQL(unittest.TestCase):
