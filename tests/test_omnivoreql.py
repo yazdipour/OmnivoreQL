@@ -1,11 +1,11 @@
+from omnivoreql import OmnivoreQL
 import os
 import unittest
 import sys
 from dotenv import load_dotenv
-
 # Add the path to the folder containing the omnivoreql module to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from omnivoreql.omnivoreql import OmnivoreQL
+sys.path.append(os.path.abspath('../omnivoreql'))
+
 
 class TestOmnivoreQL(unittest.TestCase):
     client = None
@@ -28,37 +28,71 @@ class TestOmnivoreQL(unittest.TestCase):
         return os.environ.get(variable_name)
 
     def test_get_profile(self):
+        # When
         profile = self.client.get_profile()
+        # Then
         self.assertIsNotNone(profile)
 
     def test_save_url(self):
+        # When
         result = self.client.save_url("https://www.google.com")
+        # Then
         self.assertIsNotNone(result)
         self.assertFalse('errorCodes' in result['saveUrl'])
 
     def test_get_articles(self):
+        # When
         articles = self.client.get_articles()
+        # Then
         self.assertIsNotNone(articles)
         self.assertFalse('errorCodes' in articles['search'])
 
     def test_get_article(self):
+        # Given
         username = self.client.get_profile()['me']['profile']['username']
         slug = self.client.get_articles()['search']['edges'][0]['node']['slug']
+        # When
         articles = self.client.get_article(
-            username, slug
+            username, slug, 'markdown'
         )
+        # Then
         self.assertIsNotNone(articles)
         self.assertFalse('errorCodes' in articles['article'])
 
     def test_get_labels(self):
+        # When
         labels = self.client.get_labels()
+        # Then
         self.assertIsNotNone(labels)
         self.assertFalse('errorCodes' in labels['labels'])
 
     def test_get_subscriptions(self):
+        # When
         subscriptions = self.client.get_subscriptions()
+        # Then
         self.assertIsNotNone(subscriptions)
         self.assertFalse('errorCodes' in subscriptions['subscriptions'])
+
+    def test_archive_article(self):
+        # Given
+        save_result = self.client.save_url("https://www.google.com")
+        self.assertIsNotNone(save_result)
+        # When
+        last_article = self.client.get_articles()['search']['edges'][0]
+        result = self.client.archive_article(last_article['node']['id'])
+        # Then
+        self.assertIsNotNone(result)
+
+    def test_delete_article(self):
+        # Given
+        save_result = self.client.save_url("https://www.google.com")
+        self.assertIsNotNone(save_result)
+        # When
+        last_article = self.client.get_articles()['search']['edges'][0]
+        result = self.client.delete_article(last_article['node']['id'])
+        # Then
+        self.assertIsNotNone(result)
+        self.assertIsNotNone(result['setBookmarkArticle']['bookmarkedArticle']['id'])
 
 
 if __name__ == '__main__':

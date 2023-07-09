@@ -113,11 +113,11 @@ class OmnivoreQL:
         )
         return self.client.execute(query)
 
-    def search_articles(self, first: int = None, after: int = None, query: str = None):
+    def get_articles(self, limit: int = None, cursor: str = None, format: str = 'markdown', query: str = "in:inbox", include_content: bool = False):
         q = gql(
             """
-            query Search($after: String, $first: Int, $query: String) {
-                search(first: $first, after: $after, query: $query) {
+            query Search($after: String, $first: Int, $query: String, $format: String, $includeContent: Boolean) {
+                search(after: $after, first: $first, query: $query, format: $format, includeContent: $includeContent) {
                     ... on SearchSuccess {
                         edges {
                             cursor
@@ -211,17 +211,15 @@ class OmnivoreQL:
         """
         )
         return self.client.execute(
-            q, variable_values={"first": first, "after": after, "query": query}
+            q, variable_values={
+                "first": limit, "after": cursor, "query": query, "format": format, "includeContent": include_content}
         )
 
-    def get_articles(self, first: int = None, after: int = None):
-        return self.search_articles(first, after)
-
-    def get_article(self, username: str, slug: str, include_friends_highlights: bool = False):
+    def get_article(self, username: str, slug: str, format: str = None, include_friends_highlights: bool = False):
         query = gql(
             """
-            query GetArticle($username: String!, $slug: String!, $includeFriendsHighlights: Boolean) {
-                article(username: $username, slug: $slug) {
+            query GetArticle($username: String!, $slug: String!, $format: String, $includeFriendsHighlights: Boolean) {
+                article(username: $username, slug: $slug, format: $format) {
                     ... on ArticleSuccess {
                         article {
                             ...ArticleFields
@@ -315,6 +313,59 @@ class OmnivoreQL:
             variable_values={
                 "username": username,
                 "slug": slug,
-                "includeFriendsHighlights": include_friends_highlights,
+                "format": format,
             },
+        )
+
+    def archive_article(self, article_id: str, toArchive: bool = True):
+        mutation = gql(
+            """
+        mutation SetLinkArchived($input: ArchiveLinkInput!) {
+            setLinkArchived(input: $input) {
+                    ... on ArchiveLinkSuccess {
+                        linkId
+                        message
+                    }
+                    ... on ArchiveLinkError {
+                        errorCodes
+                        message
+                    }
+                }
+            }
+        """)
+        return self.client.execute(
+            mutation,
+            variable_values={
+                "input": {
+                    "linkId": article_id,
+                    "archived": toArchive
+                }
+            }
+        )
+
+    def unarchive_article(self, article_id: str):
+        return self.archive_article(article_id, False)
+
+    def delete_article(self, article_id: str):
+        mutation = gql("""
+            mutation SetBookmarkArticle($input: SetBookmarkArticleInput!) {
+                setBookmarkArticle(input: $input) {
+                    ... on SetBookmarkArticleSuccess {
+                        bookmarkedArticle {
+                            id
+                        }
+                    }
+                    ... on SetBookmarkArticleError {
+                        errorCodes
+                    }
+                }
+            }""")
+        return self.client.execute(
+            mutation,
+            variable_values= {
+                "input": {
+                    "articleID": article_id,
+                    "bookmark": False
+                }
+            }
         )
