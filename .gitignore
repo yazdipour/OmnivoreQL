@@ -164,7 +164,7 @@ cython_debug/
 .DS_Store
 
 ### VisualStudioCode ###
-.vscode/*
+!.vscode/*
 
 # VIM
 *.swp
