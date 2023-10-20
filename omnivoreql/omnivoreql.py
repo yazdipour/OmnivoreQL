@@ -21,10 +21,7 @@ class OmnivoreQL:
                              fetch_schema_from_transport=False)
 
     def save_url(self, url: str, labels: List[str] = None):
-        if labels is None:
-            labels = []
-        else:
-            labels = [{"name": x} for x in labels]
+        labels = [] if labels is None else [{"name": x} for x in labels]
         mutation = gql(
             """
             mutation SaveUrl($input: SaveUrlInput!) {
