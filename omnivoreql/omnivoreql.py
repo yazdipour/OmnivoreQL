@@ -1,7 +1,7 @@
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 import uuid
-
+from typing import List
 
 class OmnivoreQL:
     def __init__(self, api_token: str, graphqlEndpointUrl: str = "https://api-prod.omnivore.app/api/graphql") -> None:
@@ -20,11 +20,15 @@ class OmnivoreQL:
         self.client = Client(transport=transport,
                              fetch_schema_from_transport=False)
 
-    def save_url(self, url: str):
+    def save_url(self, url: str, labels: List[str] = None):
+        if labels is None:
+            labels = []
+        else:
+            labels = [{"name": x} for x in labels]
         mutation = gql(
             """
-            mutation {
-                saveUrl(input: { clientRequestId: "%s", source: "api", url: "%s" }) {
+            mutation SaveUrl($input: SaveUrlInput!) {
+                saveUrl(input: $input) {
                     ... on SaveSuccess {
                         url
                         clientRequestId
@@ -36,9 +40,16 @@ class OmnivoreQL:
                 }
             }
         """
-            % (uuid.uuid4(), url)
         )
-        return self.client.execute(mutation)
+        return self.client.execute(
+            mutation,
+            variable_values = {
+                "clientRequestId": str(uuid.uuid4()),
+                "source": "api",
+                "url": url,
+                "labels": labels
+            }
+        )
 
     def get_profile(self):
         query = gql(
