@@ -40,6 +40,13 @@ class TestOmnivoreQL(unittest.TestCase):
         self.assertIsNotNone(result)
         self.assertFalse('errorCodes' in result['saveUrl'])
 
+    def test_save_url_with_labels(self):
+        # When
+        result = self.client.save_url("https://www.google.com", ["test", "google"])
+        # Then
+        self.assertIsNotNone(result)
+        self.assertFalse('errorCodes' in result['saveUrl'])
+
     def test_get_articles(self):
         # When
         articles = self.client.get_articles()
