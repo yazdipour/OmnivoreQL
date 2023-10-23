@@ -15,13 +15,13 @@ class TestOmnivoreQL(unittest.TestCase):
         if cls.client is None:
             # Put in .env file or use 'python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
             api_token = cls.getEnvVariable('OMNIVORE_API_TOKEN')
-            print("OMNIVORE_API_TOKEN: " + api_token[:4])
+            print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
             cls.client = OmnivoreQL(api_token)
 
     @staticmethod
     def getEnvVariable(variable_name):
         for arg in sys.argv[1:]:
-            if arg.startswith(variable_name + '='):
+            if arg.startswith(f'{variable_name}='):
                 return arg.split('=')[1]
         dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
         load_dotenv(dotenv_path)
