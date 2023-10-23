@@ -3,6 +3,7 @@ from gql.transport.requests import RequestsHTTPTransport
 import uuid
 from typing import List
 
+
 class OmnivoreQL:
     def __init__(self, api_token: str, graphqlEndpointUrl: str = "https://api-prod.omnivore.app/api/graphql") -> None:
         """
@@ -40,11 +41,13 @@ class OmnivoreQL:
         )
         return self.client.execute(
             mutation,
-            variable_values = {
-                "clientRequestId": str(uuid.uuid4()),
-                "source": "api",
-                "url": url,
-                "labels": labels
+            variable_values={
+                "input": {
+                    "clientRequestId": str(uuid.uuid4()),
+                    "source": "api",
+                    "url": url,
+                    "labels": labels
+                }
             }
         )
 
@@ -370,7 +373,7 @@ class OmnivoreQL:
             }""")
         return self.client.execute(
             mutation,
-            variable_values= {
+            variable_values={
                 "input": {
                     "articleID": article_id,
                     "bookmark": False
