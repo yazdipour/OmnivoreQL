@@ -20,6 +20,26 @@ class OmnivoreQL:
         self.client = Client(transport=transport,
                              fetch_schema_from_transport=False)
 
+    def save_page(self, url: str, original_content: str):
+        mutation = gql(
+            """
+            mutation {
+                savePage(input: { clientRequestId: "%s", source: "api", url: "%s", originalContent:"%s" }) {
+                    ... on SaveSuccess {
+                        url
+                        clientRequestId
+                    }
+                    ... on SaveError {
+                        errorCodes
+                        message
+                    }
+                }
+            }
+        """
+            % (uuid.uuid4(), url, original_content)
+        )
+        return self.client.execute(mutation)
+    
     def save_url(self, url: str):
         mutation = gql(
             """
