@@ -8,8 +8,8 @@ class OmnivoreQL:
         """
         Initialize a new instance of the GraphQL client.
 
-        :param url: The URL of the Omnivore GraphQL endpoint.
         :param api_token: The API token to use for authentication.
+        :param graphql_endpoint_url: The URL of the Omnivore GraphQL endpoint.
         """
         transport = RequestsHTTPTransport(
             url=graphql_endpoint_url,
@@ -19,27 +19,12 @@ class OmnivoreQL:
         self.client = Client(transport=transport,
                              fetch_schema_from_transport=False)
 
-    def save_page(self, url: str, original_content: str):
-        mutation = gql(
-            """
-            mutation {
-                savePage(input: { clientRequestId: "%s", source: "api", url: "%s", originalContent:"%s" }) {
-                    ... on SaveSuccess {
-                        url
-                        clientRequestId
-                    }
-                    ... on SaveError {
-                        errorCodes
-                        message
-                    }
-                }
-            }
-        """
-            % (uuid.uuid4(), url, original_content)
-        )
-        return self.client.execute(mutation)
-
     def save_url(self, url: str):
+        """
+        Save a URL to Omnivore.
+
+        :param url: The URL to save.
+        """
         mutation = gql(
             """
             mutation {
@@ -59,7 +44,36 @@ class OmnivoreQL:
         )
         return self.client.execute(mutation)
 
+    def save_page(self, url: str, original_content: str):
+        """
+        Save a page with html content to Omnivore.
+
+        :param url: The URL of the page to save.
+        :param original_content: The original html content of the page.
+        """
+        mutation = gql(
+            """
+            mutation {
+                savePage(input: { clientRequestId: "%s", source: "api", url: "%s", originalContent:"%s" }) {
+                    ... on SaveSuccess {
+                        url
+                        clientRequestId
+                    }
+                    ... on SaveError {
+                        errorCodes
+                        message
+                    }
+                }
+            }
+        """
+            % (uuid.uuid4(), url, original_content)
+        )
+        return self.client.execute(mutation)
+
     def get_profile(self):
+        """
+        Get the profile of the current user.
+        """
         query = gql(
             """
             query Viewer {
@@ -80,6 +94,9 @@ class OmnivoreQL:
         return self.client.execute(query)
 
     def get_labels(self):
+        """
+        Get the labels of the current user.
+        """
         query = gql(
             """
             query GetLabels { 
@@ -105,6 +122,9 @@ class OmnivoreQL:
         return self.client.execute(query)
 
     def get_subscriptions(self):
+        """
+        Get the subscriptions of the current user.
+        """
         query = gql(
             """
                 query GetSubscriptions {
@@ -133,6 +153,15 @@ class OmnivoreQL:
         return self.client.execute(query)
 
     def get_articles(self, limit: int = None, cursor: str = None, format: str = 'markdown', query: str = "in:inbox", include_content: bool = False):
+        """
+        Get articles for the current user.
+
+        :param limit: The number of articles to return.
+        :param cursor: The cursor to use for pagination.
+        :param format: The format of the articles to return.
+        :param query: The query to use for filtering articles. Example of query by date: 'in:inbox published:2024-03-01..*'. See https://docs.omnivore.app/using/search.html#filtering-by-save-publish-dates for more information.
+        :param include_content: Whether to include the content of the articles.
+        """
         q = gql(
             """
             query Search($after: String, $first: Int, $query: String, $format: String, $includeContent: Boolean) {
@@ -235,6 +264,13 @@ class OmnivoreQL:
         )
 
     def get_article(self, username: str, slug: str, format: str = None):
+        """
+        Get an article by username and slug.
+
+        :param username: Omnivore username.
+        :param slug: The slug of the article.
+        :param format: The format of the article to return.
+        """
         query = gql(
             """
             query GetArticle($username: String!, $slug: String!, $format: String, $includeFriendsHighlights: Boolean) {
@@ -337,6 +373,12 @@ class OmnivoreQL:
         )
 
     def archive_article(self, article_id: str, to_archive: bool = True):
+        """
+        Archive or unarchive an article.
+
+        :param article_id: The ID of the article to archive.
+        :param to_archive: Whether to archive or unarchive the article.
+        """
         mutation = gql(
             """
         mutation SetLinkArchived($input: ArchiveLinkInput!) {
@@ -358,9 +400,19 @@ class OmnivoreQL:
         )
 
     def unarchive_article(self, article_id: str):
+        """
+        Unarchive an article.
+
+        :param article_id: The ID of the article to unarchive.
+        """
         return self.archive_article(article_id, False)
 
     def delete_article(self, article_id: str):
+        """
+        Delete an article.
+
+        :param article_id: The ID of the article to delete.
+        """
         mutation = gql("""
             mutation SetBookmarkArticle($input: SetBookmarkArticleInput!) {
                 setBookmarkArticle(input: $input) {
