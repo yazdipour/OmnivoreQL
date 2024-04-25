@@ -47,7 +47,7 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_save_url(self):
         # When
-        result = self.client.save_url("https://www.google.com")
+        result = self.client.save_url("https://github.com/yazdipour/OmnivoreQL")
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["saveUrl"])
@@ -90,7 +90,7 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_archive_article(self):
         # Given
-        save_result = self.client.save_url("https://www.google.com")
+        save_result = self.client.save_url("https://pypi.org/project/omnivorex/")
         self.assertIsNotNone(save_result)
         # When
         last_article = self.client.get_articles()['search']['edges'][0]
@@ -101,7 +101,7 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_delete_article(self):
         # Given
-        save_result = self.client.save_url("https://www.google.com")
+        save_result = self.client.save_url("https://pypi.org/project/omnivoreql/")
         self.assertIsNotNone(save_result)
         # When
         last_article = self.client.get_articles()['search']['edges'][0]
