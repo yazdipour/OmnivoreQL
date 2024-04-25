@@ -6,17 +6,29 @@ from dotenv import load_dotenv
 sys.path.append(os.path.abspath('../omnivoreql'))
 from omnivoreql import OmnivoreQL
 
-
 class TestOmnivoreQL(unittest.TestCase):
     client = None
 
     @classmethod
     def setUpClass(cls):
-        if cls.client is None:
-            # Put in .env file or use 'python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            api_token = cls.getEnvVariable('OMNIVORE_API_TOKEN')
-            print("OMNIVORE_API_TOKEN: " + api_token[:4])
-            cls.client = OmnivoreQL(api_token)
+        """
+        Set up class method for unit tests of OmnivoreQL.
+
+        This method initializes the OmnivoreQL client with an API token.
+        The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in 
+        the same directory as this script or passed directly when executing the test script.
+
+        Example command to run tests with an environment variable:
+            python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN='your_api_token_here'
+
+        Raises:
+            ValueError: If the 'OMNIVORE_API_TOKEN' is not set.
+        """
+        api_token = cls.getEnvVariable('OMNIVORE_API_TOKEN')
+        if api_token is None:
+            raise ValueError("OMNIVORE_API_TOKEN is not set")
+        print("OMNIVORE_API_TOKEN: " + api_token[:4])
+        cls.client = OmnivoreQL(api_token)
 
     @staticmethod
     def getEnvVariable(variable_name):
@@ -38,14 +50,14 @@ class TestOmnivoreQL(unittest.TestCase):
         result = self.client.save_url("https://www.google.com")
         # Then
         self.assertIsNotNone(result)
-        self.assertFalse('errorCodes' in result['saveUrl'])
+        self.assertNotIn("errorCodes", result["saveUrl"])
 
     def test_get_articles(self):
         # When
         articles = self.client.get_articles()
         # Then
         self.assertIsNotNone(articles)
-        self.assertFalse('errorCodes' in articles['search'])
+        self.assertNotIn('errorCodes', articles['search'])
 
     def test_get_article(self):
         # Given
@@ -57,21 +69,21 @@ class TestOmnivoreQL(unittest.TestCase):
         )
         # Then
         self.assertIsNotNone(articles)
-        self.assertFalse('errorCodes' in articles['article'])
+        self.assertNotIn('errorCodes', articles['article'])
 
     def test_get_labels(self):
         # When
         labels = self.client.get_labels()
         # Then
         self.assertIsNotNone(labels)
-        self.assertFalse('errorCodes' in labels['labels'])
+        self.assertNotIn('errorCodes', labels['labels'])
 
     def test_get_subscriptions(self):
         # When
         subscriptions = self.client.get_subscriptions()
         # Then
         self.assertIsNotNone(subscriptions)
-        self.assertFalse('errorCodes' in subscriptions['subscriptions'])
+        self.assertNotIn('errorCodes', subscriptions['subscriptions'])
 
     def test_archive_article(self):
         # Given
