@@ -4,19 +4,18 @@ import uuid
 
 
 class OmnivoreQL:
-    def __init__(self, api_token: str, graphqlEndpointUrl: str = "https://api-prod.omnivore.app/api/graphql") -> None:
+    def __init__(self, api_token: str, graphql_endpoint_url: str = "https://api-prod.omnivore.app/api/graphql") -> None:
         """
         Initialize a new instance of the GraphQL client.
 
         :param url: The URL of the Omnivore GraphQL endpoint.
         :param api_token: The API token to use for authentication.
         """
-        transport = RequestsHTTPTransport(url=graphqlEndpointUrl,
-                                          headers={
-                                              "content-type": "application/json",
-                                              "authorization": api_token
-                                          },
-                                          use_json=True)
+        transport = RequestsHTTPTransport(
+            url=graphql_endpoint_url,
+            headers={"content-type": "application/json", "authorization": api_token},
+            use_json=True,
+        )
         self.client = Client(transport=transport,
                              fetch_schema_from_transport=False)
 
@@ -39,7 +38,7 @@ class OmnivoreQL:
             % (uuid.uuid4(), url, original_content)
         )
         return self.client.execute(mutation)
-    
+
     def save_url(self, url: str):
         mutation = gql(
             """
@@ -235,7 +234,7 @@ class OmnivoreQL:
                 "first": limit, "after": cursor, "query": query, "format": format, "includeContent": include_content}
         )
 
-    def get_article(self, username: str, slug: str, format: str = None, include_friends_highlights: bool = False):
+    def get_article(self, username: str, slug: str, format: str = None):
         query = gql(
             """
             query GetArticle($username: String!, $slug: String!, $format: String, $includeFriendsHighlights: Boolean) {
@@ -337,7 +336,7 @@ class OmnivoreQL:
             },
         )
 
-    def archive_article(self, article_id: str, toArchive: bool = True):
+    def archive_article(self, article_id: str, to_archive: bool = True):
         mutation = gql(
             """
         mutation SetLinkArchived($input: ArchiveLinkInput!) {
@@ -355,12 +354,7 @@ class OmnivoreQL:
         """)
         return self.client.execute(
             mutation,
-            variable_values={
-                "input": {
-                    "linkId": article_id,
-                    "archived": toArchive
-                }
-            }
+            variable_values={"input": {"linkId": article_id, "archived": to_archive}},
         )
 
     def unarchive_article(self, article_id: str):
