@@ -27,7 +27,7 @@ class TestOmnivoreQL(unittest.TestCase):
         api_token = cls.getEnvVariable('OMNIVORE_API_TOKEN')
         if api_token is None:
             raise ValueError("OMNIVORE_API_TOKEN is not set")
-        print("OMNIVORE_API_TOKEN: " + api_token[:4])
+        print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
         cls.client = OmnivoreQL(api_token)
 
     @staticmethod
