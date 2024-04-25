@@ -51,6 +51,7 @@ class TestOmnivoreQL(unittest.TestCase):
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["saveUrl"])
+        self.assertTrue(result["saveUrl"]["url"].startswith("http"))
 
     def test_get_articles(self):
         # When
@@ -58,6 +59,7 @@ class TestOmnivoreQL(unittest.TestCase):
         # Then
         self.assertIsNotNone(articles)
         self.assertNotIn('errorCodes', articles['search'])
+        self.assertGreater(len(articles['search']['edges']), 0)
 
     def test_get_article(self):
         # Given
@@ -70,6 +72,7 @@ class TestOmnivoreQL(unittest.TestCase):
         # Then
         self.assertIsNotNone(articles)
         self.assertNotIn('errorCodes', articles['article'])
+        self.assertIsNotNone(articles["article"]["article"]["id"])
 
     def test_get_labels(self):
         # When
@@ -94,6 +97,7 @@ class TestOmnivoreQL(unittest.TestCase):
         result = self.client.archive_article(last_article['node']['id'])
         # Then
         self.assertIsNotNone(result)
+        self.assertEqual(result['setLinkArchived']['message'], 'link_archived')
 
     def test_delete_article(self):
         # Given
