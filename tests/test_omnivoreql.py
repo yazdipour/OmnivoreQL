@@ -2,9 +2,10 @@ import os
 import unittest
 import sys
 from dotenv import load_dotenv
-# Add the path to the folder containing the omnivoreql module to the Python path
-sys.path.append(os.path.abspath('../omnivoreql'))
+
+sys.path.insert(0, "../omnivoreql")
 from omnivoreql import OmnivoreQL
+
 
 class TestOmnivoreQL(unittest.TestCase):
     client = None
@@ -15,7 +16,7 @@ class TestOmnivoreQL(unittest.TestCase):
         Set up class method for unit tests of OmnivoreQL.
 
         This method initializes the OmnivoreQL client with an API token.
-        The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in 
+        The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in
         the same directory as this script or passed directly when executing the test script.
 
         Example command to run tests with an environment variable:
@@ -24,7 +25,7 @@ class TestOmnivoreQL(unittest.TestCase):
         Raises:
             ValueError: If the 'OMNIVORE_API_TOKEN' is not set.
         """
-        api_token = cls.getEnvVariable('OMNIVORE_API_TOKEN')
+        api_token = cls.getEnvVariable("OMNIVORE_API_TOKEN")
         if api_token is None:
             raise ValueError("OMNIVORE_API_TOKEN is not set")
         print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
@@ -33,9 +34,9 @@ class TestOmnivoreQL(unittest.TestCase):
     @staticmethod
     def getEnvVariable(variable_name):
         for arg in sys.argv[1:]:
-            if arg.startswith(variable_name + '='):
-                return arg.split('=')[1]
-        dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+            if arg.startswith(variable_name + "="):
+                return arg.split("=")[1]
+        dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
         load_dotenv(dotenv_path)
         return os.environ.get(variable_name)
 
@@ -65,20 +66,18 @@ class TestOmnivoreQL(unittest.TestCase):
         articles = self.client.get_articles()
         # Then
         self.assertIsNotNone(articles)
-        self.assertNotIn('errorCodes', articles['search'])
-        self.assertGreater(len(articles['search']['edges']), 0)
+        self.assertNotIn("errorCodes", articles["search"])
+        self.assertGreater(len(articles["search"]["edges"]), 0)
 
     def test_get_article(self):
         # Given
-        username = self.client.get_profile()['me']['profile']['username']
-        slug = self.client.get_articles()['search']['edges'][0]['node']['slug']
+        username = self.client.get_profile()["me"]["profile"]["username"]
+        slug = self.client.get_articles()["search"]["edges"][0]["node"]["slug"]
         # When
-        articles = self.client.get_article(
-            username, slug, 'markdown'
-        )
+        articles = self.client.get_article(username, slug, "markdown")
         # Then
         self.assertIsNotNone(articles)
-        self.assertNotIn('errorCodes', articles['article'])
+        self.assertNotIn("errorCodes", articles["article"])
         self.assertIsNotNone(articles["article"]["article"]["id"])
 
     def test_get_labels(self):
@@ -86,37 +85,37 @@ class TestOmnivoreQL(unittest.TestCase):
         labels = self.client.get_labels()
         # Then
         self.assertIsNotNone(labels)
-        self.assertNotIn('errorCodes', labels['labels'])
+        self.assertNotIn("errorCodes", labels["labels"])
 
     def test_get_subscriptions(self):
         # When
         subscriptions = self.client.get_subscriptions()
         # Then
         self.assertIsNotNone(subscriptions)
-        self.assertNotIn('errorCodes', subscriptions['subscriptions'])
+        self.assertNotIn("errorCodes", subscriptions["subscriptions"])
 
     def test_archive_article(self):
         # Given
         save_result = self.client.save_url("https://pypi.org/project/omnivorex/")
         self.assertIsNotNone(save_result)
         # When
-        last_article = self.client.get_articles()['search']['edges'][0]
-        result = self.client.archive_article(last_article['node']['id'])
+        last_article = self.client.get_articles()["search"]["edges"][0]
+        result = self.client.archive_article(last_article["node"]["id"])
         # Then
         self.assertIsNotNone(result)
-        self.assertEqual(result['setLinkArchived']['message'], 'link_archived')
+        self.assertEqual(result["setLinkArchived"]["message"], "link_archived")
 
     def test_delete_article(self):
         # Given
         save_result = self.client.save_url("https://pypi.org/project/omnivoreql/")
         self.assertIsNotNone(save_result)
         # When
-        last_article = self.client.get_articles()['search']['edges'][0]
-        result = self.client.delete_article(last_article['node']['id'])
+        last_article = self.client.get_articles()["search"]["edges"][0]
+        result = self.client.delete_article(last_article["node"]["id"])
         # Then
         self.assertIsNotNone(result)
-        self.assertIsNotNone(result['setBookmarkArticle']['bookmarkedArticle']['id'])
+        self.assertIsNotNone(result["setBookmarkArticle"]["bookmarkedArticle"]["id"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
