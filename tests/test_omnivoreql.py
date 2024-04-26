@@ -53,6 +53,13 @@ class TestOmnivoreQL(unittest.TestCase):
         self.assertNotIn("errorCodes", result["saveUrl"])
         self.assertTrue(result["saveUrl"]["url"].startswith("http"))
 
+    def test_save_page(self):
+        # When
+        result = self.client.save_page("http://example.com", "Example")
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["savePage"])
+
     def test_get_articles(self):
         # When
         articles = self.client.get_articles()
