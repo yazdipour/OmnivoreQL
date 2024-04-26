@@ -4,7 +4,11 @@ import uuid
 
 
 class OmnivoreQL:
-    def __init__(self, api_token: str, graphql_endpoint_url: str = "https://api-prod.omnivore.app/api/graphql") -> None:
+    def __init__(
+        self,
+        api_token: str,
+        graphql_endpoint_url: str = "https://api-prod.omnivore.app/api/graphql",
+    ) -> None:
         """
         Initialize a new instance of the GraphQL client.
 
@@ -16,8 +20,7 @@ class OmnivoreQL:
             headers={"content-type": "application/json", "authorization": api_token},
             use_json=True,
         )
-        self.client = Client(transport=transport,
-                             fetch_schema_from_transport=False)
+        self.client = Client(transport=transport, fetch_schema_from_transport=False)
 
     def save_url(self, url: str):
         """
@@ -152,7 +155,14 @@ class OmnivoreQL:
         )
         return self.client.execute(query)
 
-    def get_articles(self, limit: int = None, cursor: str = None, format: str = 'markdown', query: str = "in:inbox", include_content: bool = False):
+    def get_articles(
+        self,
+        limit: int = None,
+        cursor: str = None,
+        format: str = "markdown",
+        query: str = "in:inbox",
+        include_content: bool = False,
+    ):
         """
         Get articles for the current user.
 
@@ -259,8 +269,14 @@ class OmnivoreQL:
         """
         )
         return self.client.execute(
-            q, variable_values={
-                "first": limit, "after": cursor, "query": query, "format": format, "includeContent": include_content}
+            q,
+            variable_values={
+                "first": limit,
+                "after": cursor,
+                "query": query,
+                "format": format,
+                "includeContent": include_content,
+            },
         )
 
     def get_article(self, username: str, slug: str, format: str = None):
@@ -393,7 +409,8 @@ class OmnivoreQL:
                     }
                 }
             }
-        """)
+        """
+        )
         return self.client.execute(
             mutation,
             variable_values={"input": {"linkId": article_id, "archived": to_archive}},
@@ -413,7 +430,8 @@ class OmnivoreQL:
 
         :param article_id: The ID of the article to delete.
         """
-        mutation = gql("""
+        mutation = gql(
+            """
             mutation SetBookmarkArticle($input: SetBookmarkArticleInput!) {
                 setBookmarkArticle(input: $input) {
                     ... on SetBookmarkArticleSuccess {
@@ -425,13 +443,9 @@ class OmnivoreQL:
                         errorCodes
                     }
                 }
-            }""")
+            }"""
+        )
         return self.client.execute(
             mutation,
-            variable_values= {
-                "input": {
-                    "articleID": article_id,
-                    "bookmark": False
-                }
-            }
+            variable_values={"input": {"articleID": article_id, "bookmark": False}},
         )
