@@ -1,5 +1,5 @@
-mutation DeleteLabel($input: ID!) {
-  deleteLabel(id: $input) {
+mutation DeleteLabel($id: ID!) {
+  deleteLabel(id: $id) {
     ... on DeleteLabelSuccess {
       label {
         id
