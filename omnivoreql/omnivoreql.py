@@ -28,7 +28,7 @@ class OmnivoreQL:
         self.client = Client(transport=transport, fetch_schema_from_transport=False)
         self.queries = self._load_queries("queries")
 
-    def _load_queries(self, queries_path: str):
+    def _load_queries(self, queries_path: str) -> dict:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         queries_path = os.path.join(current_dir, queries_path)
         queries = {}
@@ -42,7 +42,7 @@ class OmnivoreQL:
     def save_url(
         self,
         url: str,
-        labels: List[str] = None,
+        labels: Optional[List[str]] = None,
         clientRequestId: str = str(uuid.uuid4()),
     ):
         """
@@ -216,7 +216,7 @@ class OmnivoreQL:
             },
         )
 
-    def delete_label_by_id(self, label_id: str):
+    def delete_label(self, label_id: str):
         """
         Delete a label.
 

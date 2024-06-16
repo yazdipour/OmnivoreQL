@@ -164,12 +164,12 @@ class TestOmnivoreQL(unittest.TestCase):
             result["updateLabel"]["label"]["description"], "An updated TestLabel"
         )
 
-    def test_delete_label_by_id(self):
+    def test_delete_label(self):
         # Given
         label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
         created_label = self.client.create_label(label_input)
         # When
-        result = self.client.delete_label_by_id(
+        result = self.client.delete_label(
             created_label["createLabel"]["label"]["id"]
         )
         # Then
