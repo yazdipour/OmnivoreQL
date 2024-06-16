@@ -1,4 +1,4 @@
-name: 🚀 Releasing new version to PyPi
+name: 🚀 Releasing new version to PyPI
 
 on:
   push:
