@@ -3,9 +3,11 @@ import unittest
 import sys
 from dotenv import load_dotenv
 
-sys.path.insert(0, "../omnivoreql")
+# Add the parent directory to the path to import the OmnivoreQL module
+current_dir = os.path.dirname(os.path.abspath(__file__))
+omnivoreql_dir = os.path.join(current_dir, "..", "omnivoreql")
+sys.path.insert(0, omnivoreql_dir)
 from omnivoreql import OmnivoreQL
-
 
 class TestOmnivoreQL(unittest.TestCase):
     client = None
