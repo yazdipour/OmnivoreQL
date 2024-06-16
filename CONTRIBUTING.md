@@ -49,7 +49,7 @@ delete the branch (and the forked repo if no more development is needed).
 
 ## Release process
 
-1. Make a new tag with the version number
+1. Create a new tag with the version number
 2. Push the tag to GitHub
 3. The release will be automatically published to PyPI
 
