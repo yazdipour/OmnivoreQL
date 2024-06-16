@@ -45,7 +45,7 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     install_requires=[
-        'gql==3.4.1',
+        'gql==3.5.0',
         'requests-toolbelt==1.0.0'
     ]
 )
