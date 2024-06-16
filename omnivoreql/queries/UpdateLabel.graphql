@@ -1,0 +1,16 @@
+mutation UpdateLabel($input: UpdateLabelInput!) {
+  updateLabel(input: $input) {
+    ... on UpdateLabelSuccess {
+      label {
+        id
+        name
+        color
+        description
+        createdAt
+      }
+    }
+    ... on UpdateLabelError {
+      errorCodes
+    }
+  }
+}

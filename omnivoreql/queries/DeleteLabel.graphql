@@ -1,0 +1,16 @@
+mutation DeleteLabel($input: ID!) {
+  deleteLabel(id: $input) {
+    ... on DeleteLabelSuccess {
+      label {
+        id
+        name
+        color
+        description
+        createdAt
+      }
+    }
+    ... on DeleteLabelError {
+      errorCodes
+    }
+  }
+}

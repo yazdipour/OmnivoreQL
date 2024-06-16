@@ -1,0 +1,12 @@
+mutation SavePage($input: SavePageInput!) {
+  savePage(input: $input) {
+    ... on SaveSuccess {
+      url
+      clientRequestId
+    }
+    ... on SaveError {
+      errorCodes
+      message
+    }
+  }
+}

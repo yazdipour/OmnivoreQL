@@ -1,0 +1,19 @@
+query GetLabels {
+    labels {
+        ... on LabelsSuccess {
+            labels {
+                ...LabelFields
+            }
+        }
+        ... on LabelsError {
+            errorCodes
+        }
+    }
+}
+fragment LabelFields on Label {
+  id
+  name
+  color
+  description
+  createdAt
+}

@@ -1,0 +1,14 @@
+query Viewer {
+    me {
+        id
+        name
+        isFullUser
+        intercomHash
+        profile {
+            id
+            username
+            pictureUrl
+            bio
+        }
+    }
+}
