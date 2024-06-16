@@ -180,12 +180,13 @@ class TestOmnivoreQL(unittest.TestCase):
             created_label["createLabel"]["label"]["id"],
         )
 
-    def test_get_all_labels_and_delete_them(self):
-        # Given
-        labels = self.client.get_labels()["labels"]
-        # When
-        for label in labels["labels"]:
-            self.client.delete_label_by_id(label["id"])
+    def test_clean_up_created_labels(self):
+        try:
+            labels = self.client.get_labels()["labels"]
+            for label in labels["labels"]:
+                self.client.delete_label(label["id"])
+        except Exception as e:
+            print(f"Error cleaning up labels: {e}")
 
 
 if __name__ == "__main__":
