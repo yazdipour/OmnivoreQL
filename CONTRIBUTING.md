@@ -30,26 +30,6 @@ Activate the virtualenv and install dependencies by running:
 python -m pip install -r requirements.txt
 ```
 
-## How to create a good Pull Request
-
-1. Make a fork of the master branch on github
-2. Clone your forked repo on your computer
-3. Create a feature branch `git checkout -b feature_my_awesome_feature`
-4. Modify the code
-5. Verify that the [Coding guidelines](#coding-guidelines) are respected
-6. Verify that the [automated tests](#running-tests) are passing
-7. Make a commit and push it to your fork
-8. From github, create the pull request. Automated tests from GitHub actions
-and codecov will then automatically run the tests and check the code coverage
-9. If other modifications are needed, you are free to create more commits and
-push them on your branch. They'll get added to the PR automatically.
-
-Once the Pull Request is accepted and merged, you can safely
-delete the branch (and the forked repo if no more development is needed).
-delete the branch (and the forked repo if no more development is needed).
-
-## Release process
-
 ## Release process
 
 1. Create a new tag with the version number
