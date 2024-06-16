@@ -1,9 +1,9 @@
-name: 🚀 Deploy to PyPI
+name: 🚀 Releasing new version to PyPI
 
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 
 permissions:
   contents: read

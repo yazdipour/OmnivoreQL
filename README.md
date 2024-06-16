@@ -4,8 +4,6 @@
 
 This is a Python client for the [Omnivore API](https://omnivore.app).
 
-[![GitHub stars](https://img.shields.io/github/stars/yazdipour/omnivoreql.svg?style=social&label=Star)](https://github.com/yazdipour/omnivoreql/stargazers)
-[![Github Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/yazdipour)
 
 [![Tests](https://github.com/yazdipour/OmnivoreQL/actions/workflows/test.yml/badge.svg)](https://github.com/yazdipour/OmnivoreQL/actions/workflows/test.yml)
 [![PyPI version](https://badge.fury.io/py/omnivoreql.svg)](https://pypi.org/project/omnivoreql/)
@@ -33,7 +31,8 @@ Use the methods of the OmnivoreQL class to interact with the Omnivore API.
 ```python
 profile = omnivoreql_client.get_profile()
 
-result = omnivoreql_client.save_url("https://www.google.com")
+saved_page = omnivoreql_client.save_url("https://www.google.com")
+saved_page_with_label = omnivoreql_client.save_url("https://www.google.com", ["label1", "label2"])
 
 articles = omnivoreql_client.get_articles()
 
@@ -45,10 +44,18 @@ labels = omnivoreql_client.get_labels()
 subscriptions = omnivoreql_client.get_subscriptions()
 ```
 
-## Contributing
+## Documentation
 
-* If you want to contribute to this project, you can follow steps in [CONTRIBUTING.md](CONTRIBUTING.md) file.
-* Main Omnivore graphql schema is in [schema.graphql](https://github.com/omnivore-app/omnivore/blob/main/packages/api/src/schema.ts) file.
+* Main Omnivore graphql schema is in: [schema.graphql](https://github.com/omnivore-app/omnivore/blob/main/packages/api/src/schema.ts)
+* To contribute to this project: [CONTRIBUTING.md](docs/CONTRIBUTING.md)
+* To more know about Release process: [RELEASE.md](docs/RELEASE.md), [PYPI.md](docs/PYPI.md)
+
+## Support
+
+If you find this project useful, you can support it by becoming a sponsor. Your contribution will help maintain the project and keep it up to date.
+
+[![GitHub stars](https://img.shields.io/github/stars/yazdipour/omnivoreql.svg?style=social&label=Star)](https://github.com/yazdipour/omnivoreql/stargazers)
+[![Github Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/yazdipour)
 
 ## License
 
