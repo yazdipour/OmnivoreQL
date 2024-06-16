@@ -1,6 +1,7 @@
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
 import uuid
+from typing import List
 
 
 class OmnivoreQL:
@@ -22,16 +23,18 @@ class OmnivoreQL:
         )
         self.client = Client(transport=transport, fetch_schema_from_transport=False)
 
-    def save_url(self, url: str):
+    def save_url(self, url: str, labels: List[str] = None):
         """
         Save a URL to Omnivore.
 
         :param url: The URL to save.
+        :param labels: The labels to assign to the item.
         """
+        labels = [] if labels is None else [{"name": x} for x in labels]
         mutation = gql(
             """
-            mutation {
-                saveUrl(input: { clientRequestId: "%s", source: "api", url: "%s" }) {
+            mutation SaveUrl($input: SaveUrlInput!) {
+                saveUrl(input: $input) {
                     ... on SaveSuccess {
                         url
                         clientRequestId
@@ -43,9 +46,18 @@ class OmnivoreQL:
                 }
             }
         """
-            % (uuid.uuid4(), url)
         )
-        return self.client.execute(mutation)
+        return self.client.execute(
+            mutation,
+            variable_values={
+                "input": {
+                    "clientRequestId": str(uuid.uuid4()),
+                    "source": "api",
+                    "url": url,
+                    "labels": labels
+                }
+            }
+        )
 
     def save_page(self, url: str, original_content: str):
         """
@@ -447,5 +459,10 @@ class OmnivoreQL:
         )
         return self.client.execute(
             mutation,
-            variable_values={"input": {"articleID": article_id, "bookmark": False}},
+            variable_values={
+                "input": {
+                    "articleID": article_id,
+                    "bookmark": False
+                }
+            }
         )
