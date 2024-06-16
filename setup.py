@@ -1,19 +1,28 @@
 from setuptools import setup
 import subprocess
 
+
 def get_latest_git_tag():
     try:
         version = subprocess.check_output(["git", "describe", "--tags", "--abbrev=0"])
-        version = version.strip().decode("utf-8")  # Remove trailing newline and decode bytes to string
+        version = version.strip().decode(
+            "utf-8"
+        )  # Remove trailing newline and decode bytes to string
 
         # Remove the 'v' from the tag
-        if version.startswith('v'):
+        if version.startswith("v"):
             version = version[1:]
 
         return version
     except Exception as e:
         print(f"An exception occurred while getting the latest git tag: {e}")
         return None
+
+
+def read_requirements():
+    with open("requirements.txt") as f:
+        return f.read().splitlines()
+
 
 VERSION = get_latest_git_tag() or "0.0.1"  # Fallback version
 
@@ -23,12 +32,12 @@ PROJECT_URLS = {
 }
 
 setup(
-    name='omnivoreql',
+    name="omnivoreql",
     version=VERSION,
-    description='Omnivore API Client for Python',
-    author='Shahriar Yazdipour',
-    author_email='git@yazdipour.com',
-    packages=['omnivoreql'],
+    description="Omnivore API Client for Python",
+    author="Shahriar Yazdipour",
+    author_email="git@yazdipour.com",
+    packages=["omnivoreql"],
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",
@@ -44,8 +53,5 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=[
-        'gql==3.4.1',
-        'requests-toolbelt==1.0.0'
-    ]
+    install_requires=read_requirements(),
 )
