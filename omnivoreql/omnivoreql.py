@@ -180,7 +180,7 @@ class OmnivoreQL:
 
         :param limit: The number of articles to return.
         :param cursor: The cursor to use for pagination.
-        :param format: The format of the articles to return. Can be 'html' or 'markdown'. Default is 'html'.
+        :param format: The output format of the articles. Can be 'html' (default) or 'markdown'.
         :param query: The query to use for filtering articles. Example of query by date: 'in:inbox published:2024-03-01..*'. See https://docs.omnivore.app/using/search.html#filtering-by-save-publish-dates for more information.
         :param include_content: Whether to include the content of the articles.
         """
