@@ -2,8 +2,8 @@ import os
 import unittest
 import sys
 from dotenv import load_dotenv
-# Add the path to the folder containing the omnivoreql module to the Python path
-sys.path.append(os.path.abspath('../omnivoreql'))
+
+sys.path.insert(0, "../omnivoreql")
 from omnivoreql import OmnivoreQL
 
 
@@ -12,18 +12,31 @@ class TestOmnivoreQL(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if cls.client is None:
-            # Put in .env file or use 'python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            api_token = cls.getEnvVariable('OMNIVORE_API_TOKEN')
-            print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
-            cls.client = OmnivoreQL(api_token)
+        """
+        Set up class method for unit tests of OmnivoreQL.
+
+        This method initializes the OmnivoreQL client with an API token.
+        The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in
+        the same directory as this script or passed directly when executing the test script.
+
+        Example command to run tests with an environment variable:
+            python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN='your_api_token_here'
+
+        Raises:
+            ValueError: If the 'OMNIVORE_API_TOKEN' is not set.
+        """
+        api_token = cls.getEnvVariable("OMNIVORE_API_TOKEN")
+        if api_token is None:
+            raise ValueError("OMNIVORE_API_TOKEN is not set")
+        print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
+        cls.client = OmnivoreQL(api_token)
 
     @staticmethod
     def getEnvVariable(variable_name):
         for arg in sys.argv[1:]:
-            if arg.startswith(f'{variable_name}='):
-                return arg.split('=')[1]
-        dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+            if arg.startswith(variable_name + "="):
+                return arg.split("=")[1]
+        dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
         load_dotenv(dotenv_path)
         return os.environ.get(variable_name)
 
@@ -35,10 +48,18 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_save_url(self):
         # When
-        result = self.client.save_url("https://www.google.com")
+        result = self.client.save_url("https://github.com/yazdipour/OmnivoreQL")
         # Then
         self.assertIsNotNone(result)
-        self.assertFalse('errorCodes' in result['saveUrl'])
+        self.assertNotIn("errorCodes", result["saveUrl"])
+        self.assertTrue(result["saveUrl"]["url"].startswith("http"))
+
+    def test_save_page(self):
+        # When
+        result = self.client.save_page("http://example.com", "Example")
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["savePage"])
 
     def test_save_url_with_labels(self):
         # When
@@ -52,55 +73,56 @@ class TestOmnivoreQL(unittest.TestCase):
         articles = self.client.get_articles()
         # Then
         self.assertIsNotNone(articles)
-        self.assertFalse('errorCodes' in articles['search'])
+        self.assertNotIn("errorCodes", articles["search"])
+        self.assertGreater(len(articles["search"]["edges"]), 0)
 
     def test_get_article(self):
         # Given
-        username = self.client.get_profile()['me']['profile']['username']
-        slug = self.client.get_articles()['search']['edges'][0]['node']['slug']
+        username = self.client.get_profile()["me"]["profile"]["username"]
+        slug = self.client.get_articles()["search"]["edges"][0]["node"]["slug"]
         # When
-        articles = self.client.get_article(
-            username, slug, 'markdown'
-        )
+        articles = self.client.get_article(username, slug, "markdown")
         # Then
         self.assertIsNotNone(articles)
-        self.assertFalse('errorCodes' in articles['article'])
+        self.assertNotIn("errorCodes", articles["article"])
+        self.assertIsNotNone(articles["article"]["article"]["id"])
 
     def test_get_labels(self):
         # When
         labels = self.client.get_labels()
         # Then
         self.assertIsNotNone(labels)
-        self.assertFalse('errorCodes' in labels['labels'])
+        self.assertNotIn("errorCodes", labels["labels"])
 
     def test_get_subscriptions(self):
         # When
         subscriptions = self.client.get_subscriptions()
         # Then
         self.assertIsNotNone(subscriptions)
-        self.assertFalse('errorCodes' in subscriptions['subscriptions'])
+        self.assertNotIn("errorCodes", subscriptions["subscriptions"])
 
     def test_archive_article(self):
         # Given
-        save_result = self.client.save_url("https://www.google.com")
+        save_result = self.client.save_url("https://pypi.org/project/omnivorex/")
         self.assertIsNotNone(save_result)
         # When
-        last_article = self.client.get_articles()['search']['edges'][0]
-        result = self.client.archive_article(last_article['node']['id'])
+        last_article = self.client.get_articles()["search"]["edges"][0]
+        result = self.client.archive_article(last_article["node"]["id"])
         # Then
         self.assertIsNotNone(result)
+        self.assertEqual(result["setLinkArchived"]["message"], "link_archived")
 
     def test_delete_article(self):
         # Given
-        save_result = self.client.save_url("https://www.google.com")
+        save_result = self.client.save_url("https://pypi.org/project/omnivoreql/")
         self.assertIsNotNone(save_result)
         # When
-        last_article = self.client.get_articles()['search']['edges'][0]
-        result = self.client.delete_article(last_article['node']['id'])
+        last_article = self.client.get_articles()["search"]["edges"][0]
+        result = self.client.delete_article(last_article["node"]["id"])
         # Then
         self.assertIsNotNone(result)
-        self.assertIsNotNone(result['setBookmarkArticle']['bookmarkedArticle']['id'])
+        self.assertIsNotNone(result["setBookmarkArticle"]["bookmarkedArticle"]["id"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

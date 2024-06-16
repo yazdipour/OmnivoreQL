@@ -1,5 +1,7 @@
 # OmnivoreQL: Omnivore API client for Python
 
+![OmnivoreQL Icon](https://github.com/yazdipour/OmnivoreQL/assets/8194807/d51d462d-4f5a-4031-980e-1faa5ca3f6e0)
+
 This is a Python client for the [Omnivore API](https://omnivore.app).
 
 [![GitHub stars](https://img.shields.io/github/stars/yazdipour/omnivoreql.svg?style=social&label=Star)](https://github.com/yazdipour/omnivoreql/stargazers)
