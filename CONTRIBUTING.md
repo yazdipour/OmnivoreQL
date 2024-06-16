@@ -46,3 +46,11 @@ push them on your branch. They'll get added to the PR automatically.
 
 Once the Pull Request is accepted and merged, you can safely
 delete the branch (and the forked repo if no more development is needed).
+
+## Release process
+
+1. Make a new tag with the version number
+2. Push the tag to GitHub
+3. The release will be automatically published to PyPI
+
+You can see how the Github Action for releasing works in the `.github/workflows/release.yml` file.
