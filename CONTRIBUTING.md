@@ -46,6 +46,9 @@ push them on your branch. They'll get added to the PR automatically.
 
 Once the Pull Request is accepted and merged, you can safely
 delete the branch (and the forked repo if no more development is needed).
+delete the branch (and the forked repo if no more development is needed).
+
+## Release process
 
 ## Release process
 
