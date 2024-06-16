@@ -44,3 +44,12 @@ articles = omnivoreql_client.get_article(username, slug)
 labels = omnivoreql_client.get_labels()
 subscriptions = omnivoreql_client.get_subscriptions()
 ```
+
+## Contributing
+
+* If you want to contribute to this project, you can follow steps in [CONTRIBUTING.md](CONTRIBUTING.md) file.
+* Main Omnivore graphql schema is in [schema.graphql](https://github.com/omnivore-app/omnivore/blob/main/packages/api/src/schema.ts) file.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
