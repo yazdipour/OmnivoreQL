@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 current_dir = os.path.dirname(os.path.abspath(__file__))
 omnivoreql_dir = os.path.join(current_dir, "..", "omnivoreql")
 sys.path.insert(0, omnivoreql_dir)
-from omnivoreql import OmnivoreQL
+from omnivoreql import OmnivoreQL, CreateLabelInput
+
 
 class TestOmnivoreQL(unittest.TestCase):
     client = None
@@ -68,7 +69,7 @@ class TestOmnivoreQL(unittest.TestCase):
         result = self.client.save_url("https://www.google.com", ["test", "google"])
         # Then
         self.assertIsNotNone(result)
-        self.assertFalse('errorCodes' in result['saveUrl'])
+        self.assertFalse("errorCodes" in result["saveUrl"])
 
     def test_get_articles(self):
         # When
@@ -124,6 +125,68 @@ class TestOmnivoreQL(unittest.TestCase):
         # Then
         self.assertIsNotNone(result)
         self.assertIsNotNone(result["setBookmarkArticle"]["bookmarkedArticle"]["id"])
+
+    def test_create_label(self):
+        # Given
+        label_name = hash("TestLabel")  # create random label name to avoid conflicts
+        label_input = CreateLabelInput(
+            name=str(label_name), color="#FF0000", description="label description"
+        )
+        # When
+        result = self.client.create_label(label_input)
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["createLabel"])
+        self.assertEqual(result["createLabel"]["label"]["name"], label_input.name)
+        self.assertEqual(result["createLabel"]["label"]["color"], label_input.color)
+        self.assertEqual(
+            result["createLabel"]["label"]["description"], label_input.description
+        )
+
+    def test_update_label(self):
+        # Given
+        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
+        created_label = self.client.create_label(label_input)
+        # When
+        new_label_name = f"UpdatedLabel-{label_input.name}"
+        result = self.client.update_label(
+            label_id=created_label["createLabel"]["label"]["id"],
+            name=new_label_name,
+            color="#0000FF",
+            description="An updated TestLabel",
+        )
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["updateLabel"])
+        self.assertEqual(result["updateLabel"]["label"]["name"], new_label_name)
+        self.assertEqual(result["updateLabel"]["label"]["color"], "#0000FF")
+        self.assertEqual(
+            result["updateLabel"]["label"]["description"], "An updated TestLabel"
+        )
+
+    def test_delete_label(self):
+        # Given
+        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
+        created_label = self.client.create_label(label_input)
+        # When
+        result = self.client.delete_label(
+            created_label["createLabel"]["label"]["id"]
+        )
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["deleteLabel"])
+        self.assertEqual(
+            result["deleteLabel"]["label"]["id"],
+            created_label["createLabel"]["label"]["id"],
+        )
+
+    def test_clean_up_created_labels(self):
+        try:
+            labels = self.client.get_labels()["labels"]
+            for label in labels["labels"]:
+                self.client.delete_label(label["id"])
+        except Exception as e:
+            print(f"Error cleaning up labels: {e}")
 
 
 if __name__ == "__main__":

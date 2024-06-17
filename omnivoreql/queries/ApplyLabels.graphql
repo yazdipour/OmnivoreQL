@@ -1,0 +1,19 @@
+mutation SetLabels($input: SetLabelsInput!) {
+    setLabels(input: $input) {
+        ... on SetLabelsSuccess {
+            labels {
+                ...LabelFields
+            }
+        }
+        ... on SetLabelsError {
+            errorCodes
+        }
+    }
+}
+fragment LabelFields on Label {
+  id
+  name
+  color
+  description
+  createdAt
+}

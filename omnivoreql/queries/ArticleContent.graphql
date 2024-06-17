@@ -1,0 +1,93 @@
+query GetArticle(
+  $username: String!
+  $slug: String!
+  $format: String
+  $includeFriendsHighlights: Boolean
+) {
+  article(username: $username, slug: $slug, format: $format) {
+    ... on ArticleSuccess {
+      article {
+        ...ArticleFields
+        content
+        highlights(input: { includeFriends: $includeFriendsHighlights }) {
+          ...HighlightFields
+        }
+        labels {
+          ...LabelFields
+        }
+        recommendations {
+          ...RecommendationFields
+        }
+      }
+    }
+    ... on ArticleError {
+      errorCodes
+    }
+  }
+}
+
+fragment ArticleFields on Article {
+  id
+  title
+  url
+  author
+  image
+  savedAt
+  createdAt
+  publishedAt
+  contentReader
+  originalArticleUrl
+  readingProgressPercent
+  readingProgressTopPercent
+  readingProgressAnchorIndex
+  slug
+  isArchived
+  description
+  linkId
+  state
+  wordsCount
+}
+
+fragment HighlightFields on Highlight {
+  id
+  type
+  shortId
+  quote
+  prefix
+  suffix
+  patch
+  annotation
+  createdByMe
+  createdAt
+  updatedAt
+  sharedAt
+  highlightPositionPercent
+  highlightPositionAnchorIndex
+  labels {
+    id
+    name
+    color
+    createdAt
+  }
+}
+
+fragment LabelFields on Label {
+  id
+  name
+  color
+  description
+  createdAt
+}
+
+fragment RecommendationFields on Recommendation {
+  id
+  name
+  note
+  user {
+    userId
+    name
+    username
+    profileImageURL
+  }
+  recommendedAt
+}

@@ -1,0 +1,12 @@
+mutation SaveUrl($input: SaveUrlInput!) {
+  saveUrl(input: $input) {
+    ... on SaveSuccess {
+      url
+      clientRequestId
+    }
+    ... on SaveError {
+      errorCodes
+      message
+    }
+  }
+}

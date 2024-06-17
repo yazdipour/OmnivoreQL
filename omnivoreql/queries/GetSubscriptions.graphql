@@ -1,0 +1,21 @@
+query GetSubscriptions {
+  subscriptions(sort: { by: UPDATED_TIME }) {
+    ... on SubscriptionsSuccess {
+      subscriptions {
+        id
+        name
+        newsletterEmail
+        url
+        description
+        status
+        unsubscribeMailTo
+        unsubscribeHttpUrl
+        createdAt
+        updatedAt
+      }
+    }
+    ... on SubscriptionsError {
+      errorCodes
+    }
+  }
+}
