@@ -224,5 +224,5 @@ class OmnivoreQL:
         """
         return self.client.execute(
             gql(self.queries["DeleteLabel"]),
-            variable_values={"input": label_id},
+            variable_values={"id": label_id},
         )
