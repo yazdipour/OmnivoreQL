@@ -188,6 +188,19 @@ class TestOmnivoreQL(unittest.TestCase):
         except Exception as e:
             print(f"Error cleaning up labels: {e}")
 
+    def test_set_labels(self):
+        # Given
+        page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
+        page_id = page["id"]
+        label_ids = [self.client.get_labels()["labels"]["labels"][0]["id"]]
+        # When
+        result = self.client.set_labels(page_id, label_ids=label_ids)
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["setLabels"])
+        self.assertEqual(result["setLabels"]["pageId"], page_id)
+        self.assertListEqual(result["setLabels"]["labelIds"], label_ids)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -226,3 +226,41 @@ class OmnivoreQL:
             gql(self.queries["DeleteLabel"]),
             variable_values={"id": label_id},
         )
+
+    def set_labels(
+        self,
+        page_id: str,
+        labels: Optional[List[CreateLabelInput]] = None,
+        label_ids: Optional[List[str]] = None,
+        source: str = "api",
+    ) -> dict:
+        """
+        Set labels for a page.
+
+        :param page_id: The ID of the page to set labels for.
+        :param label_ids: The IDs of the labels to set.
+        :param labels: The labels to set.
+        """
+        parsed_labels = (
+            [
+                {
+                    "name": label.name,
+                    "color": label.color,
+                    "description": label.description,
+                }
+                for label in labels
+            ]
+            if labels
+            else None
+        )
+        return self.client.execute(
+            gql(self.queries["ApplyLabels"]),
+            variable_values={
+                "input": {
+                    "pageId": page_id,
+                    "labelIds": label_ids,
+                    "labels": parsed_labels,
+                    "source": source,
+                }
+            },
+        )
