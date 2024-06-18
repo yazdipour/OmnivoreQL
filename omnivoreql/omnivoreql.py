@@ -1,10 +1,10 @@
-from gql import gql, Client
-from gql.transport.requests import RequestsHTTPTransport
 import uuid
-from models import CreateLabelInput
-from dataclasses import asdict
 import os
 from typing import List, Optional
+from gql.transport.requests import RequestsHTTPTransport
+from gql import gql, Client
+from dataclasses import asdict
+from .models import CreateLabelInput
 
 
 class OmnivoreQL:
