@@ -40,8 +40,11 @@ username = profile['me']['profile']['username']
 slug = articles['search']['edges'][0]['node']['slug']
 articles = omnivoreql_client.get_article(username, slug)
 
-labels = omnivoreql_client.get_labels()
 subscriptions = omnivoreql_client.get_subscriptions()
+
+labels = omnivoreql_client.get_labels()
+from omnivoreql import CreateLabelInput
+omnivoreql_client.create_label(CreateLabelInput("label1", "#00ff00", "This is label description"))
 ```
 
 ## Documentation
