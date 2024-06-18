@@ -1,6 +1,6 @@
 name: Unit Tests
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   test:
@@ -18,10 +18,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
     - name: Run unit tests
-      run: |
-        cd tests
-        python -m unittest test_omnivoreql.py
+      run: python -m unittest discover -s tests
       env:
         OMNIVORE_API_TOKEN: ${{ secrets.OMNIVORE_API_TOKEN }}
