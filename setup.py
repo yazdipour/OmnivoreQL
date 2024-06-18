@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import subprocess
 
 
@@ -37,7 +37,7 @@ setup(
     description="Omnivore API Client for Python",
     author="Shahriar Yazdipour",
     author_email="git@yazdipour.com",
-    packages=["omnivoreql"],
+    packages=find_packages(),
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT",
