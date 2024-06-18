@@ -16,13 +16,13 @@ class TestOmnivoreQL(unittest.TestCase):
         This method initializes the OmnivoreQL client with an API token.
         The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in
         the same directory as this script or passed directly when executing the test script.
-    
         Example command to run tests with an environment variable:
             python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN='your_api_token_here'
 
         Raises:
             ValueError: If the 'OMNIVORE_API_TOKEN' is not set.
         """
+        print("\nStarting OmnivoreQL tests...\n")
         api_token = cls.getEnvVariable("OMNIVORE_API_TOKEN")
         if api_token is None:
             raise ValueError("OMNIVORE_API_TOKEN is not set")
