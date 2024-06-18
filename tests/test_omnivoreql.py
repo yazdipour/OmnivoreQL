@@ -10,8 +10,9 @@ Unit tests for the OmnivoreQL client.
 To run the tests, execute the following command:
     python -m unittest discover -s tests
 """
+
+
 class TestOmnivoreQL(unittest.TestCase):
-    client = None
 
     @classmethod
     def setUpClass(cls):
@@ -33,6 +34,21 @@ class TestOmnivoreQL(unittest.TestCase):
             raise ValueError("OMNIVORE_API_TOKEN is not set")
         print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
         cls.client = OmnivoreQL(api_token)
+        cls.sample_label = None
+        # clean_up_created_labels from previous tests
+        try:
+            labels = cls.client.get_labels()["labels"]
+            for label in labels["labels"]:
+                if not cls.sample_label:
+                    cls.sample_label = label
+                    continue
+                cls.client.delete_label(label["id"])
+        except Exception as e:
+            print(f"Error cleaning up labels: {e}")
+        if not cls.sample_label:
+            cls.sample_label = cls.client.create_label(
+                CreateLabelInput(str(hash("test_update_label")), "#FF0000")
+            )["createLabel"]["label"]
 
     @staticmethod
     def getEnvVariable(variable_name):
@@ -51,7 +67,7 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_save_url(self):
         # When
-        result = self.client.save_url("https://github.com/yazdipour/OmnivoreQL")
+        result = self.client.save_url("https://github.com/yazdipour/OmnivoreQL", ["testLabel"])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["saveUrl"])
@@ -59,17 +75,10 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_save_page(self):
         # When
-        result = self.client.save_page("http://example.com", "Example")
+        result = self.client.save_page("http://example.com", "Example", ["label1"])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["savePage"])
-
-    def test_save_url_with_labels(self):
-        # When
-        result = self.client.save_url("https://www.google.com", ["test", "google"])
-        # Then
-        self.assertIsNotNone(result)
-        self.assertFalse("errorCodes" in result["saveUrl"])
 
     def test_get_articles(self):
         # When
@@ -128,9 +137,8 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_create_label(self):
         # Given
-        label_name = hash("TestLabel")  # create random label name to avoid conflicts
         label_input = CreateLabelInput(
-            name=str(label_name), color="#FF0000", description="label description"
+            name=str(hash("test_create_label")), color="#FF0000"
         )
         # When
         result = self.client.create_label(label_input)
@@ -145,12 +153,11 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_update_label(self):
         # Given
-        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
-        created_label = self.client.create_label(label_input)
+        label_sample = self.sample_label
         # When
-        new_label_name = f"UpdatedLabel-{label_input.name}"
+        new_label_name = f"UpdatedLabel-{hash(label_sample['name'])}"
         result = self.client.update_label(
-            label_id=created_label["createLabel"]["label"]["id"],
+            label_id=label_sample["id"],
             name=new_label_name,
             color="#0000FF",
             description="An updated TestLabel",
@@ -166,27 +173,51 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_delete_label(self):
         # Given
-        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
-        created_label = self.client.create_label(label_input)
+        label_sample = self.client.create_label(
+            CreateLabelInput(str(hash("test_update_label")), "#FF0000")
+        )["createLabel"]["label"]
         # When
-        result = self.client.delete_label(
-            created_label["createLabel"]["label"]["id"]
-        )
+        result = self.client.delete_label(label_sample["id"])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["deleteLabel"])
         self.assertEqual(
             result["deleteLabel"]["label"]["id"],
-            created_label["createLabel"]["label"]["id"],
+            label_sample["id"],
         )
 
-    def test_clean_up_created_labels(self):
-        try:
-            labels = self.client.get_labels()["labels"]
-            for label in labels["labels"]:
-                self.client.delete_label(label["id"])
-        except Exception as e:
-            print(f"Error cleaning up labels: {e}")
+    def test_set_page_labels_by_labels(self):
+        # Given
+        page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
+        label_sample = self.sample_label
+        created_label_input = CreateLabelInput(
+            label_sample["name"],
+            label_sample["color"],
+            label_sample["description"],
+        )
+        # When
+        result = self.client.set_page_labels_by_labels(page["id"], [created_label_input])
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["setLabels"])
+        self.assertEqual(
+            result["setLabels"]["labels"][0]["id"], label_sample["id"]
+        )
+
+    def test_set_page_labels_by_label_ids(self):
+        # Given
+        page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
+        label_sample = self.sample_label
+        # When
+        result = self.client.set_page_labels_by_label_ids(
+            page["id"], label_ids=[label_sample["id"]]
+        )
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["setLabels"])
+        self.assertEqual(
+            result["setLabels"]["labels"][0]["id"], label_sample["id"]
+        )
 
 
 if __name__ == "__main__":
