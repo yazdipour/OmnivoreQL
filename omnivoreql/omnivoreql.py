@@ -222,7 +222,7 @@ class OmnivoreQL:
             variable_values={"id": label_id},
         )
 
-    def set_page_labels_by_create_label_inputs(
+    def set_page_labels(
         self, page_id: str, labels: List[CreateLabelInput]
     ) -> dict:
         """
@@ -231,9 +231,9 @@ class OmnivoreQL:
         :param page_id: The ID of the page to set labels for.
         :param labels: The labels to set.
         """
-        return self.set_page_labels_by_labels(page_id, parsed_labels)
+        return self.set_page_labels_by_fields(page_id, labels)
 
-    def set_page_labels_by_labels(self, page_id: str, labels: List[dict]) -> dict:
+    def set_page_labels_by_fields(self, page_id: str, labels: List[dict]) -> dict:
         """
         Set labels for a page.
 
@@ -262,7 +262,7 @@ class OmnivoreQL:
             },
         )
 
-    def set_page_labels_by_label_ids(self, page_id: str, label_ids: List[str]) -> dict:
+    def set_page_labels_by_ids(self, page_id: str, label_ids: List[str]) -> dict:
         """
         Set labels for a page.
 

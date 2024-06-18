@@ -186,7 +186,7 @@ class TestOmnivoreQL(unittest.TestCase):
             label_sample["id"],
         )
 
-    def test_set_page_labels_by_labels(self):
+    def test_set_page_labels(self):
         # Given
         page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
         label_sample = self.sample_label
@@ -196,7 +196,7 @@ class TestOmnivoreQL(unittest.TestCase):
             label_sample["description"],
         )
         # When
-        result = self.client.set_page_labels_by_labels(page["id"], [created_label_input])
+        result = self.client.set_page_labels(page["id"], [created_label_input])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["setLabels"])
@@ -204,12 +204,12 @@ class TestOmnivoreQL(unittest.TestCase):
             result["setLabels"]["labels"][0]["id"], label_sample["id"]
         )
 
-    def test_set_page_labels_by_label_ids(self):
+    def test_set_page_labels_by_ids(self):
         # Given
         page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
         label_sample = self.sample_label
         # When
-        result = self.client.set_page_labels_by_label_ids(
+        result = self.client.set_page_labels_by_ids(
             page["id"], label_ids=[label_sample["id"]]
         )
         # Then
