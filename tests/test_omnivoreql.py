@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 from omnivoreql.omnivoreql import OmnivoreQL
 from omnivoreql.models import CreateLabelInput
 
+"""
+Unit tests for the OmnivoreQL client.
+To run the tests, execute the following command:
+    python -m unittest discover -s tests
+"""
 class TestOmnivoreQL(unittest.TestCase):
     client = None
 
