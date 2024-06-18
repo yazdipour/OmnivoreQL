@@ -2,13 +2,8 @@ import os
 import unittest
 import sys
 from dotenv import load_dotenv
-
-# Add the parent directory to the path to import the OmnivoreQL module
-current_dir = os.path.dirname(os.path.abspath(__file__))
-omnivoreql_dir = os.path.join(current_dir, "..", "omnivoreql")
-sys.path.insert(0, omnivoreql_dir)
-from omnivoreql import OmnivoreQL, CreateLabelInput
-
+from omnivoreql.omnivoreql import OmnivoreQL
+from omnivoreql.models import CreateLabelInput
 
 class TestOmnivoreQL(unittest.TestCase):
     client = None
@@ -21,7 +16,7 @@ class TestOmnivoreQL(unittest.TestCase):
         This method initializes the OmnivoreQL client with an API token.
         The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in
         the same directory as this script or passed directly when executing the test script.
-
+    
         Example command to run tests with an environment variable:
             python -m unittest test_omnivoreql.py OMNIVORE_API_TOKEN='your_api_token_here'
 
