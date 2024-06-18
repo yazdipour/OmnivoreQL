@@ -10,6 +10,8 @@ Unit tests for the OmnivoreQL client.
 To run the tests, execute the following command:
     python -m unittest discover -s tests
 """
+
+
 class TestOmnivoreQL(unittest.TestCase):
     client = None
 
@@ -169,9 +171,7 @@ class TestOmnivoreQL(unittest.TestCase):
         label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
         created_label = self.client.create_label(label_input)
         # When
-        result = self.client.delete_label(
-            created_label["createLabel"]["label"]["id"]
-        )
+        result = self.client.delete_label(created_label["createLabel"]["label"]["id"])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["deleteLabel"])
@@ -188,18 +188,48 @@ class TestOmnivoreQL(unittest.TestCase):
         except Exception as e:
             print(f"Error cleaning up labels: {e}")
 
-    def test_set_labels(self):
+    def test_set_page_labels_by_labels(self):
         # Given
         page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
-        page_id = page["id"]
-        label_ids = [self.client.get_labels()["labels"]["labels"][0]["id"]]
+        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
+        created_label = self.client.create_label(label_input)["createLabel"]["label"]
         # When
-        result = self.client.set_labels(page_id, label_ids=label_ids)
+        result = self.client.set_page_labels_by_labels(page["id"], [created_label])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["setLabels"])
-        self.assertEqual(result["setLabels"]["pageId"], page_id)
-        self.assertListEqual(result["setLabels"]["labelIds"], label_ids)
+        self.assertEqual(result["setLabels"]["labels"][0]["id"], created_label["id"])
+
+    def test_set_page_labels_by_create_label_inputs(self):
+        # Given
+        page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
+        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
+        created_label = self.client.create_label(label_input)["createLabel"]["label"]
+        created_label_input = CreateLabelInput(
+            created_label["name"],
+            created_label["color"],
+            created_label["description"],
+        )
+        # When
+        result = self.client.set_page_labels_by_labels(page["id"], [created_label])
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["setLabels"])
+        self.assertEqual(result["setLabels"]["labels"][0]["id"], created_label["id"])
+
+    def test_set_page_labels_by_label_ids(self):
+        # Given
+        page = self.client.get_articles(limit=1)["search"]["edges"][0]["node"]
+        label_input = CreateLabelInput(name=hash("TestLabel"), color="#FF0000")
+        created_label = self.client.create_label(label_input)["createLabel"]["label"]
+        # When
+        result = self.client.set_page_labels_by_label_ids(
+            page["id"], label_ids=[created_label["id"]]
+        )
+        # Then
+        self.assertIsNotNone(result)
+        self.assertNotIn("errorCodes", result["setLabels"])
+        self.assertEqual(result["setLabels"]["labels"][0]["id"], created_label["id"])
 
 
 if __name__ == "__main__":

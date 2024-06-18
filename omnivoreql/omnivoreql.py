@@ -27,7 +27,6 @@ class OmnivoreQL:
         self.client = Client(transport=transport, fetch_schema_from_transport=False)
         self.queries = {}
 
-
     def _get_query(self, query_name: str) -> str:
         if query_name not in self.queries:
             current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -223,41 +222,59 @@ class OmnivoreQL:
             variable_values={"id": label_id},
         )
 
-    def set_labels(
-        self,
-        page_id: str,
-        labels: Optional[List[CreateLabelInput]] = None,
-        label_ids: Optional[List[str]] = None,
-        source: str = "api",
+    def set_page_labels_by_create_label_inputs(
+        self, page_id: str, labels: List[CreateLabelInput]
     ) -> dict:
         """
         Set labels for a page.
 
         :param page_id: The ID of the page to set labels for.
-        :param label_ids: The IDs of the labels to set.
         :param labels: The labels to set.
-        :param source: The source of the call.
         """
-        parsed_labels = (
-            [
+        return self.set_page_labels_by_labels(page_id, parsed_labels)
+
+    def set_page_labels_by_labels(self, page_id: str, labels: List[dict]) -> dict:
+        """
+        Set labels for a page.
+
+        :param page_id: The ID of the page to set labels for.
+        :param labels: The labels to set.
+        """
+        parsed_labels = []
+        for label in labels:
+            if isinstance(label, CreateLabelInput):
+                label = asdict(label)
+            parsed_labels.append(
                 {
-                    "name": label.name,
-                    "color": label.color,
-                    "description": label.description,
+                    "name": label["name"],
+                    "color": label["color"],
+                    "description": label["description"],
                 }
-                for label in labels
-            ]
-            if labels
-            else None
+            )
+
+        return self.client.execute(
+            self._get_query("ApplyLabels"),
+            variable_values={
+                "input": {
+                    "pageId": page_id,
+                    "labels": parsed_labels,
+                }
+            },
         )
+
+    def set_page_labels_by_label_ids(self, page_id: str, label_ids: List[str]) -> dict:
+        """
+        Set labels for a page.
+
+        :param page_id: The ID of the page to set labels for.
+        :param label_ids: The IDs of the labels to set.
+        """
         return self.client.execute(
             self._get_query("ApplyLabels"),
             variable_values={
                 "input": {
                     "pageId": page_id,
                     "labelIds": label_ids,
-                    "labels": parsed_labels,
-                    "source": source,
                 }
             },
         )
