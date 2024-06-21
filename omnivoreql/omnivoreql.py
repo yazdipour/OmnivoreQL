@@ -110,7 +110,7 @@ class OmnivoreQL:
         include_content: bool = False,
     ):
         """
-        Get articles for the current user.
+        Get articles for the current user. It is limited to first 100 articles by default. Use limit and cursor to fetch more.
 
         :param limit: The number of articles to return.
         :param cursor: The cursor to use for pagination.
