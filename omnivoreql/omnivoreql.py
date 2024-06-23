@@ -104,17 +104,17 @@ class OmnivoreQL:
     def get_articles(
         self,
         limit: int = None,
-        cursor: int = None,
+        after: int = 0,
         format: str = "html",
         query: str = "in:inbox",
         include_content: bool = False,
     ):
         """
-        Get articles for the current user. Maximum articles currently you can get is 100. Use cursor to fetch more.
+        Get articles for the current user. Maximum articles currently you can get is 100. Use 'after' to fetch more.
 
         :param limit: The number of articles to return (max can be 100).
-        :param cursor: The cursor to use for pagination.
-        :param format: The output format of the articles. Can be 'html' (default) or 'markdown'.
+        :param after: Get articles after this cursor position (Default is 0).
+        :param format: The output format of the articles. ('html' [Default], 'markdown')
         :param query: The query to use for filtering articles. Example of query by date: 'in:inbox published:2024-03-01..*'. See https://docs.omnivore.app/using/search.html#filtering-by-save-publish-dates for more information.
         :param include_content: Whether to include the content of the articles.
         """
@@ -122,7 +122,7 @@ class OmnivoreQL:
             self._get_query("Search"),
             variable_values={
                 "first": limit,
-                "after": cursor,
+                "after": str(after),
                 "query": query,
                 "format": format,
                 "includeContent": include_content,
