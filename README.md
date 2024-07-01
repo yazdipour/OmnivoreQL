@@ -63,3 +63,10 @@ If you find this project useful, you can support it by becoming a sponsor. Your 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Star History
+Check out our growth in the community:
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yazdipour/OmnivoreQL&type=Date)](https://star-history.com/#yazdipour/OmnivoreQL&Date)
