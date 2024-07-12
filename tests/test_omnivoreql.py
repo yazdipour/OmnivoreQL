@@ -82,11 +82,13 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_get_articles(self):
         # When
-        articles = self.client.get_articles()
+        articles = self.client.get_articles(include_content=True)
         # Then
         self.assertIsNotNone(articles)
         self.assertNotIn("errorCodes", articles["search"])
         self.assertGreater(len(articles["search"]["edges"]), 0)
+        self.assertIsNotNone(articles["search"]["edges"][0]["node"]["id"])
+        self.assertIsNotNone(articles["search"]["edges"][0]["node"]["content"])
 
     def test_get_article(self):
         # Given
