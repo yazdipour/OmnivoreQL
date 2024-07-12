@@ -16,54 +16,7 @@ query Search(
       edges {
         cursor
         node {
-          id
-          title
-          slug
-          url
-          pageType
-          contentReader
-          createdAt
-          isArchived
-          readingProgressPercent
-          readingProgressTopPercent
-          readingProgressAnchorIndex
-          author
-          image
-          description
-          publishedAt
-          ownedByViewer
-          originalArticleUrl
-          uploadFileId
-          labels {
-            id
-            name
-            color
-          }
-          pageId
-          shortId
-          quote
-          annotation
-          state
-          siteName
-          subscription
-          readAt
-          savedAt
-          wordsCount
-          recommendations {
-            id
-            name
-            note
-            user {
-              userId
-              name
-              username
-              profileImageURL
-            }
-            recommendedAt
-          }
-          highlights {
-            ...HighlightFields
-          }
+          ...SearchItemFields
         }
       }
       pageInfo {
@@ -101,4 +54,71 @@ fragment HighlightFields on Highlight {
     color
     createdAt
   }
+}
+fragment SearchItemFields on SearchItem {
+  id
+  title
+  slug
+  url
+  pageType
+  contentReader
+  createdAt
+  updatedAt
+  isArchived
+  readingProgressPercent
+  readingProgressTopPercent
+  readingProgressAnchorIndex
+  author
+  image
+  description
+  publishedAt
+  ownedByViewer
+  originalArticleUrl
+  uploadFileId
+  color
+  labels {
+    id
+    name
+    color
+  }
+  pageId
+  shortId
+  quote
+  annotation
+  state
+  siteName
+  subscription
+  unsubMailTo
+  unsubHttpUrl
+  readAt
+  savedAt
+  wordsCount
+  recommendations {
+    id
+    name
+    note
+    user {
+      userId
+      name
+      username
+      profileImageURL
+    }
+    recommendedAt
+  }
+  highlights {
+    ...HighlightFields
+  }
+  language
+  siteIcon
+  content
+  archivedAt
+  feedContent
+  previewContentType
+  links
+  folder
+  aiSummary
+  directionality
+  format
+  score
+  seenAt
 }

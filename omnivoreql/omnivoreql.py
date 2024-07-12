@@ -129,7 +129,7 @@ class OmnivoreQL:
             },
         )
 
-    def get_article(self, username: str, slug: str, format: str = None):
+    def get_article(self, username: str, slug: str, format: str = None, include_content: bool = False):
         """
         Get an article by username and slug.
 
@@ -143,6 +143,7 @@ class OmnivoreQL:
                 "username": username,
                 "slug": slug,
                 "format": format,
+                "includeContent": include_content,
             },
         )
 
