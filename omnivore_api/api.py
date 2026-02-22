@@ -1,17 +1,23 @@
+from __future__ import annotations
+
 import uuid
+import shortuuid
 import os
-from typing import List, Optional
+from typing import List, Optional, Literal
 from gql.transport.requests import RequestsHTTPTransport
 from gql import gql, Client
 from dataclasses import asdict
 from .models import CreateLabelInput
 
 
-class OmnivoreQL:
+class OmnivoreAPI:
+
+    DEFAULT_GRAPHQL_ENDPOINT = "https://api-prod.omnivore.app/api/graphql"
+
     def __init__(
         self,
         api_token: str,
-        graphql_endpoint_url: str = "https://api-prod.omnivore.app/api/graphql",
+        graphql_endpoint_url: str = DEFAULT_GRAPHQL_ENDPOINT,
     ) -> None:
         """
         Initialize a new instance of the GraphQL client.
@@ -21,25 +27,39 @@ class OmnivoreQL:
         """
         transport = RequestsHTTPTransport(
             url=graphql_endpoint_url,
-            headers={"content-type": "application/json", "authorization": api_token},
+            headers={
+                "content-type": "application/json",
+                "authorization": api_token
+            },
             use_json=True,
         )
-        self.client = Client(transport=transport, fetch_schema_from_transport=False)
+        self.client = Client(transport=transport,
+                             fetch_schema_from_transport=False)
         self.queries = {}
+        self._username = None
+
+    @property
+    def username(self) -> str:
+        if self._username is None:
+            profile = self.get_profile()
+            username = profile['me']['profile']['username']
+            self._username = username
+        return self._username
 
     def _get_query(self, query_name: str) -> str:
         if query_name not in self.queries:
             current_dir = os.path.dirname(os.path.abspath(__file__))
-            query_file_path = os.path.join(current_dir, f"queries/{query_name}.graphql")
+            query_file_path = os.path.join(current_dir,
+                                           f"queries/{query_name}.graphql")
             with open(query_file_path, "r") as file:
                 self.queries[query_name] = gql(file.read())
         return self.queries[query_name]
 
     def save_url(
-        self,
-        url: str,
-        labels: Optional[List[str]] = None,
-        client_request_id: str = str(uuid.uuid4()),
+            self,
+            url: str,
+            labels: Optional[List[str]] = None,
+            client_request_id: str = str(uuid.uuid4()),
     ):
         """
         Save a URL to Omnivore.
@@ -61,7 +81,10 @@ class OmnivoreQL:
             },
         )
 
-    def save_page(self, url: str, original_content: str, labels: List[str] = None):
+    def save_page(self,
+                  url: str,
+                  original_content: str,
+                  labels: List[str] = None):
         """
         Save a page with html content to Omnivore.
 
@@ -105,7 +128,7 @@ class OmnivoreQL:
         self,
         limit: int = None,
         after: int = 0,
-        format: str = "html",
+        format: Literal['html', 'markdown'] = "html",
         query: str = "in:inbox",
         include_content: bool = False,
     ):
@@ -129,7 +152,11 @@ class OmnivoreQL:
             },
         )
 
-    def get_article(self, username: str, slug: str, format: str = None, include_content: bool = False):
+    def get_article(self,
+                    username: str,
+                    slug: str,
+                    format: str = None,
+                    include_content: bool = False):
         """
         Get an article by username and slug.
 
@@ -156,7 +183,12 @@ class OmnivoreQL:
         """
         return self.client.execute(
             self._get_query("ArchiveSavedItem"),
-            variable_values={"input": {"linkId": article_id, "archived": to_archive}},
+            variable_values={
+                "input": {
+                    "linkId": article_id,
+                    "archived": to_archive
+                }
+            },
         )
 
     def unarchive_article(self, article_id: str):
@@ -175,7 +207,12 @@ class OmnivoreQL:
         """
         return self.client.execute(
             self._get_query("DeleteSavedItem"),
-            variable_values={"input": {"articleID": article_id, "bookmark": False}},
+            variable_values={
+                "input": {
+                    "articleID": article_id,
+                    "bookmark": False
+                }
+            },
         )
 
     def create_label(self, label: CreateLabelInput):
@@ -189,9 +226,11 @@ class OmnivoreQL:
             variable_values={"input": asdict(label)},
         )
 
-    def update_label(
-        self, label_id: str, name: str, color: str, description: str = None
-    ):
+    def update_label(self,
+                     label_id: str,
+                     name: str,
+                     color: str,
+                     description: str = None):
         """
         Update a label.
 
@@ -223,9 +262,8 @@ class OmnivoreQL:
             variable_values={"id": label_id},
         )
 
-    def set_page_labels(
-        self, page_id: str, labels: List[CreateLabelInput]
-    ) -> dict:
+    def set_page_labels(self, page_id: str,
+                        labels: List[CreateLabelInput]) -> dict:
         """
         Set labels for a page.
 
@@ -234,7 +272,8 @@ class OmnivoreQL:
         """
         return self.set_page_labels_by_fields(page_id, labels)
 
-    def set_page_labels_by_fields(self, page_id: str, labels: List[dict]) -> dict:
+    def set_page_labels_by_fields(self, page_id: str,
+                                  labels: List[dict]) -> dict:
         """
         Set labels for a page.
 
@@ -245,13 +284,11 @@ class OmnivoreQL:
         for label in labels:
             if isinstance(label, CreateLabelInput):
                 label = asdict(label)
-            parsed_labels.append(
-                {
-                    "name": label["name"],
-                    "color": label["color"],
-                    "description": label["description"],
-                }
-            )
+            parsed_labels.append({
+                "name": label["name"],
+                "color": label["color"],
+                "description": label["description"],
+            })
 
         return self.client.execute(
             self._get_query("ApplyLabels"),
@@ -263,7 +300,8 @@ class OmnivoreQL:
             },
         )
 
-    def set_page_labels_by_ids(self, page_id: str, label_ids: List[str]) -> dict:
+    def set_page_labels_by_ids(self, page_id: str,
+                               label_ids: List[str]) -> dict:
         """
         Set labels for a page.
 
@@ -276,6 +314,63 @@ class OmnivoreQL:
                 "input": {
                     "pageId": page_id,
                     "labelIds": label_ids,
+                }
+            },
+        )
+
+    def _query_label_id(self, label_name: str):
+        labels = getattr(self, "labels", dict())
+        if label_name in labels:
+            return labels[label_name]["id"]
+        else:
+            refreshed_labels = self.get_labels()['labels']['labels']
+            labels.update({label["name"]: label for label in refreshed_labels})
+            self.labels = labels
+            if label_name not in labels:
+                raise ValueError(f"Label {label_name} not found.")
+            return labels[label_name]["id"]
+
+    def update_page_labels(self, slug: str, labels: List[str] | str):
+        if isinstance(labels, str):
+            labels = [labels]
+        new_labels = [self._query_label_id(l) for l in labels]
+
+        # query existed labels
+        article = self.get_article(self.username, slug)['article']['article']
+        page_id = article['id']
+        old_labels = [l['id'] for l in article['labels']]
+
+        labels = old_labels + new_labels
+        labels = list(dict.fromkeys(labels))
+
+        return self.client.execute(
+            self._get_query("ApplyLabels"),
+            variable_values={
+                "input": {
+                    "pageId": page_id,
+                    "labelIds": labels,
+                }
+            },
+        )
+
+    def create_highlight(self, page_id: str, annotation: str,
+                         highlight_type: Literal["HIGHLIGHT", "NOTE"]):
+        """
+        Create a new highlight.
+
+        :param article_id: The ID of the article to create the highlight for.
+        :param annotation: The annotation of the highlight.
+        :param highlight_type: The type of the highlight.
+        """
+        return self.client.execute(
+            self._get_query("CreateHighlight"),
+            variable_values={
+                "input": {
+                    "annotation": annotation,
+                    "articleId": page_id,
+                    "id": str(uuid.uuid4()),
+                    "shortId": str(shortuuid.ShortUUID().random(length=8)),
+                    "type": highlight_type
                 }
             },
         )

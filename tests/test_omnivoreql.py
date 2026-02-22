@@ -2,24 +2,23 @@ import os
 import unittest
 import sys
 from dotenv import load_dotenv
-from omnivoreql.omnivoreql import OmnivoreQL
-from omnivoreql.models import CreateLabelInput
-
+from omnivore_api.api import OmnivoreAPI
+from omnivore_api.models import CreateLabelInput
 """
-Unit tests for the OmnivoreQL client.
+Unit tests for the OmnivoreAPI client.
 To run the tests, execute the following command:
     python -m unittest discover -s tests
 """
 
 
-class TestOmnivoreQL(unittest.TestCase):
+class TestOmnivoreAPI(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         """
-        Set up class method for unit tests of OmnivoreQL.
+        Set up class method for unit tests of OmnivoreAPI.
 
-        This method initializes the OmnivoreQL client with an API token.
+        This method initializes the OmnivoreAPI client with an API token.
         The 'OMNIVORE_API_TOKEN' must be specified either in a '.env' file located in
         the same directory as this script or passed directly when executing the test script.
         Example command to run tests with an environment variable:
@@ -28,12 +27,12 @@ class TestOmnivoreQL(unittest.TestCase):
         Raises:
             ValueError: If the 'OMNIVORE_API_TOKEN' is not set.
         """
-        print("\nStarting OmnivoreQL tests...\n")
+        print("\nStarting OmnivoreAPI tests...\n")
         api_token = cls.getEnvVariable("OMNIVORE_API_TOKEN")
         if api_token is None:
             raise ValueError("OMNIVORE_API_TOKEN is not set")
         print(f"OMNIVORE_API_TOKEN: {api_token[:4]}")
-        cls.client = OmnivoreQL(api_token)
+        cls.client = OmnivoreAPI(api_token)
         cls.sample_label = None
         # clean_up_created_labels from previous tests
         try:
@@ -47,8 +46,8 @@ class TestOmnivoreQL(unittest.TestCase):
             print(f"Error cleaning up labels: {e}")
         if not cls.sample_label:
             cls.sample_label = cls.client.create_label(
-                CreateLabelInput(str(hash("test_update_label")), "#FF0000")
-            )["createLabel"]["label"]
+                CreateLabelInput(str(hash("test_update_label")),
+                                 "#FF0000"))["createLabel"]["label"]
 
     @staticmethod
     def getEnvVariable(variable_name):
@@ -67,7 +66,8 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_save_url(self):
         # When
-        result = self.client.save_url("https://github.com/yazdipour/OmnivoreQL", ["testLabel"])
+        result = self.client.save_url(
+            "https://github.com/yazdipour/OmnivoreAPI", ["testLabel"])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["saveUrl"])
@@ -75,7 +75,8 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_save_page(self):
         # When
-        result = self.client.save_page("http://example.com", "Example", ["label1"])
+        result = self.client.save_page("http://example.com", "Example",
+                                       ["label1"])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["savePage"])
@@ -117,7 +118,8 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_archive_article(self):
         # Given
-        save_result = self.client.save_url("https://pypi.org/project/omnivorex/")
+        save_result = self.client.save_url(
+            "https://pypi.org/project/omnivorex/")
         self.assertIsNotNone(save_result)
         # When
         last_article = self.client.get_articles()["search"]["edges"][0]
@@ -128,30 +130,32 @@ class TestOmnivoreQL(unittest.TestCase):
 
     def test_delete_article(self):
         # Given
-        save_result = self.client.save_url("https://pypi.org/project/omnivoreql/")
+        save_result = self.client.save_url(
+            "https://pypi.org/project/omnivore_api/")
         self.assertIsNotNone(save_result)
         # When
         last_article = self.client.get_articles()["search"]["edges"][0]
         result = self.client.delete_article(last_article["node"]["id"])
         # Then
         self.assertIsNotNone(result)
-        self.assertIsNotNone(result["setBookmarkArticle"]["bookmarkedArticle"]["id"])
+        self.assertIsNotNone(
+            result["setBookmarkArticle"]["bookmarkedArticle"]["id"])
 
     def test_create_label(self):
         # Given
-        label_input = CreateLabelInput(
-            name=str(hash("test_create_label")), color="#FF0000"
-        )
+        label_input = CreateLabelInput(name=str(hash("test_create_label")),
+                                       color="#FF0000")
         # When
         result = self.client.create_label(label_input)
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["createLabel"])
-        self.assertEqual(result["createLabel"]["label"]["name"], label_input.name)
-        self.assertEqual(result["createLabel"]["label"]["color"], label_input.color)
-        self.assertEqual(
-            result["createLabel"]["label"]["description"], label_input.description
-        )
+        self.assertEqual(result["createLabel"]["label"]["name"],
+                         label_input.name)
+        self.assertEqual(result["createLabel"]["label"]["color"],
+                         label_input.color)
+        self.assertEqual(result["createLabel"]["label"]["description"],
+                         label_input.description)
 
     def test_update_label(self):
         # Given
@@ -167,17 +171,17 @@ class TestOmnivoreQL(unittest.TestCase):
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["updateLabel"])
-        self.assertEqual(result["updateLabel"]["label"]["name"], new_label_name)
+        self.assertEqual(result["updateLabel"]["label"]["name"],
+                         new_label_name)
         self.assertEqual(result["updateLabel"]["label"]["color"], "#0000FF")
-        self.assertEqual(
-            result["updateLabel"]["label"]["description"], "An updated TestLabel"
-        )
+        self.assertEqual(result["updateLabel"]["label"]["description"],
+                         "An updated TestLabel")
 
     def test_delete_label(self):
         # Given
         label_sample = self.client.create_label(
-            CreateLabelInput(str(hash("test_update_label")), "#FF0000")
-        )["createLabel"]["label"]
+            CreateLabelInput(str(hash("test_update_label")),
+                             "#FF0000"))["createLabel"]["label"]
         # When
         result = self.client.delete_label(label_sample["id"])
         # Then
@@ -202,9 +206,8 @@ class TestOmnivoreQL(unittest.TestCase):
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["setLabels"])
-        self.assertEqual(
-            result["setLabels"]["labels"][0]["id"], label_sample["id"]
-        )
+        self.assertEqual(result["setLabels"]["labels"][0]["id"],
+                         label_sample["id"])
 
     def test_set_page_labels_by_ids(self):
         # Given
@@ -212,14 +215,12 @@ class TestOmnivoreQL(unittest.TestCase):
         label_sample = self.sample_label
         # When
         result = self.client.set_page_labels_by_ids(
-            page["id"], label_ids=[label_sample["id"]]
-        )
+            page["id"], label_ids=[label_sample["id"]])
         # Then
         self.assertIsNotNone(result)
         self.assertNotIn("errorCodes", result["setLabels"])
-        self.assertEqual(
-            result["setLabels"]["labels"][0]["id"], label_sample["id"]
-        )
+        self.assertEqual(result["setLabels"]["labels"][0]["id"],
+                         label_sample["id"])
 
 
 if __name__ == "__main__":

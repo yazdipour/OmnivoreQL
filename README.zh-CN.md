@@ -1,15 +1,15 @@
-# OmnivoreAPI: Omnivore API client for Python
+# OmnivoreAPI：Omnivore API 的 Python 客户端
 
-**[中文](README.zh-CN.md) | English**
+**中文 | [English](README.md)**
 
 **Forked from [OmnivoreQL](https://github.com/yazdipour/OmnivoreQL)**
 
-This is a Python client for the [Omnivore API](https://omnivore.app).
+本项目是 [Omnivore API](https://omnivore.app) 的 Python 客户端。
 
 <!-- [![Tests](https://github.com/Benature/OmnivoreAPI/actions/workflows/test.yml/badge.svg)](https://github.com/Benature/OmnivoreAPI/actions/workflows/test.yml) -->
 [![PyPI version](https://badge.fury.io/py/omnivore_api.svg)](https://pypi.org/project/omnivore_api/)
 
-## Installation
+## 安装
 
 ```bash
 pip install omnivore_api
@@ -17,35 +17,35 @@ pip install omnivore_api
 
 ## CLI
 
-After installation, the `omnivore` command is available directly in your terminal.
+安装后，终端中即可使用 `omnivore` 命令。
 
-### Setup
+### 初始化配置
 
 ```bash
 omnivore init
 ```
 
-Prompts for your API token and endpoint URL, then writes `~/.config/omnivore-api/config.yaml`.
+按提示输入 API Token 和 Endpoint URL，配置将写入 `~/.config/omnivore-api/config.yaml`。
 
-### Commands
+### 命令列表
 
 ```bash
-# Save a URL (optionally with labels)
+# 保存 URL（可选添加标签）
 omnivore save-url https://example.com
-omnivore save-url https://example.com --label reading --label python
+omnivore save-url https://example.com --label 阅读 --label python
 
-# List articles in your inbox
+# 获取收件箱文章
 omnivore get-articles
 omnivore get-articles --limit 20 --query "in:inbox" --format markdown
 
-# Get your profile
+# 获取个人信息
 omnivore get-profile
 
-# List all labels
+# 获取所有标签
 omnivore get-labels
 ```
 
-All commands output JSON to stdout, so you can pipe to `jq`:
+所有命令均输出 JSON 到标准输出，可配合 `jq` 使用：
 
 ```bash
 omnivore get-labels | jq '.[].name'
@@ -53,7 +53,7 @@ omnivore get-labels | jq '.[].name'
 
 ## Python API
 
-Import the package and create a client instance:
+导入并创建客户端实例：
 
 ```python
 from omnivore_api import OmnivoreAPI
@@ -77,28 +77,26 @@ subscriptions = omnivore.get_subscriptions()
 
 labels = omnivore.get_labels()
 from omnivore_api import CreateLabelInput
-omnivore.create_label(CreateLabelInput("label1", "#00ff00", "This is label description"))
+omnivore.create_label(CreateLabelInput("label1", "#00ff00", "标签描述"))
 ```
 
-## Documentation
+## 文档
 
-* Main Omnivore graphql schema is in: [schema.graphql](https://github.com/omnivore-app/omnivore/blob/main/packages/api/src/schema.ts)
-* To contribute to this project: [CONTRIBUTING.md](docs/CONTRIBUTING.md)
-* To more know about Release process: [RELEASE.md](docs/RELEASE.md), [PYPI.md](docs/PYPI.md)
+* Omnivore GraphQL Schema：[schema.graphql](https://github.com/omnivore-app/omnivore/blob/main/packages/api/src/schema.ts)
+* 贡献指南：[CONTRIBUTING.md](docs/CONTRIBUTING.md)
+* 发布流程：[RELEASE.md](docs/RELEASE.md)、[PYPI.md](docs/PYPI.md)
 
-<!-- ## Support
+<!-- ## 支持
 
-If you find this project useful, you can support it by becoming a sponsor. Your contribution will help maintain the project and keep it up to date. -->
+如果本项目对你有帮助，欢迎通过赞助支持维护。 -->
 
 <!-- [![GitHub stars](https://img.shields.io/github/stars/Benature/omnivore_api.svg?style=social&label=Star)](https://github.com/Benature/omnivore_api/stargazers)
 [![Github Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/Benature) -->
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+本项目基于 MIT 许可证，详见 [LICENSE](LICENSE)。
 
-<!-- ## Star History  -->
-
-<!-- Check out our growth in the community: -->
+<!-- ## Star 历史 -->
 
 <!-- [![Star History Chart](https://api.star-history.com/svg?repos=Benature/OmnivoreAPI&type=Date)](https://star-history.com/#Benature/OmnivoreAPI&Date) -->

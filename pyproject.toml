@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omnivore_api"
+dynamic = ["version"]
+description = "Omnivore API Client for Python"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Benature" }]
+keywords = ["omnivore", "api", "readlater", "graphql", "gql", "client"]
+requires-python = ">=3.9"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "python-dotenv",
+    "gql>=3.5.0",
+    "requests-toolbelt>=1.0.0",
+    "shortuuid",
+    "typer",
+    "pyyaml",
+]
+
+[project.urls]
+Homepage = "https://github.com/Benature/OmnivoreAPI"
+"Bug Tracker" = "https://github.com/Benature/OmnivoreAPI/issues"
+"Source Code" = "https://github.com/Benature/OmnivoreAPI"
+
+[project.scripts]
+omnivore = "omnivore_api.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "omnivore_api.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+omnivore_api = ["queries/*.graphql", "queries/*.graphqls"]

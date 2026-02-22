@@ -1,0 +1,37 @@
+mutation CreateHighlight($input: CreateHighlightInput!) {
+    createHighlight(input: $input) {
+        ... on CreateHighlightSuccess {
+            highlight {
+                ...HighlightFields
+            }
+        }
+
+        ... on CreateHighlightError {
+            errorCodes
+        }
+    }
+}
+
+fragment HighlightFields on Highlight {
+    id
+    type
+    shortId
+    quote
+    prefix
+    suffix
+    patch
+    color
+    annotation
+    createdByMe
+    createdAt
+    updatedAt
+    sharedAt
+    highlightPositionPercent
+    highlightPositionAnchorIndex
+    labels {
+        id
+        name
+        color
+        createdAt
+    }
+}

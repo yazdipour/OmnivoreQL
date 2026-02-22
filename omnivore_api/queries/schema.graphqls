@@ -105,6 +105,7 @@ type Article {
     uploadFileId: ID
     url: String!
     wordsCount: Int
+    aiSummary: String
 }
 
 type ArticleEdge {
